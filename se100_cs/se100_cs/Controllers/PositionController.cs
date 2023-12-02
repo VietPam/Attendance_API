@@ -18,15 +18,7 @@ namespace se100_cs.Controllers
         [Route("getByDepartmentCode")]
         public IActionResult getByDepartmentCode(string departmentCode)
         {
-            List<MyPosition.Position_DTO_Response> response = Program.api_position.getByDepartmentCode(departmentCode);
-            if(response.Count > 0)
-            {
-                return Ok(response);
-            }
-            else
-            {
-                return BadRequest();
-            }
+             return Ok(Program.api_position.getByDepartmentCode(departmentCode));
         }
 
         [HttpPost]
@@ -55,19 +47,19 @@ namespace se100_cs.Controllers
             }
         }
 
-        //[HttpDelete]
-        //[Route("deleteOne")]
-        //public async Task<IActionResult> deleteOne([FromBody] Request_Department_DTO_Delete dto)
-        //{
-        //    bool tmp = await Program.api_position.deleteOne(dto.code);
-        //    if (tmp)
-        //    {
-        //        return Ok();
-        //    }
-        //    else
-        //    {
-        //        return BadRequest();
-        //    }
-        //}
+        [HttpDelete]
+        [Route("deleteOne")]
+        public async Task<IActionResult> deleteOne(long id)
+        {
+            bool tmp = await Program.api_position.deleteOne(id);
+            if (tmp)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
     }
 }

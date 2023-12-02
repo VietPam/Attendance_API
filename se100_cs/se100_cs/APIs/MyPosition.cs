@@ -10,6 +10,7 @@ namespace se100_cs.APIs
         public MyPosition() { }
         public class Position_DTO_Response
         {
+            public long Id { get; set; }
             public string title { get; set; } = "";
             public string code { get; set; } = "";
             public long salary_coeffcient { get; set; } = 0;
@@ -32,6 +33,7 @@ namespace se100_cs.APIs
                     foreach (SqlPosition position in list_positions)
                     {
                         Position_DTO_Response item = new Position_DTO_Response();
+                        item.Id = position.ID;
                         item.title = position.title;
                         item.code = position.code;
                         item.salary_coeffcient = position.salary_coeffcient;
@@ -88,15 +90,11 @@ namespace se100_cs.APIs
                 return true;
             }
         }
-        public async Task<bool> deleteOne(string code)
+        public async Task<bool> deleteOne(long id)
         {
-            if (string.IsNullOrEmpty(code))
-            {
-                return false;
-            }
             using (DataContext context = new DataContext())
             {
-                SqlPosition? position = context.positions!.Where(s => s.code == code && s.isDeleted == false).FirstOrDefault();
+                SqlPosition? position = context.positions!.Where(s => s.ID == id && s.isDeleted == false).FirstOrDefault();
                 if (position == null)
                 {
                     return false;

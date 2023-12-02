@@ -10,6 +10,7 @@ namespace se100_cs
     {
         public static MyDepartment api_department=new MyDepartment();
         public static MyPosition api_position=new MyPosition();
+        public static MyEmployee api_employee=new MyEmployee();
         public static async Task Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
@@ -22,13 +23,17 @@ namespace se100_cs
                 var builder = WebApplication.CreateBuilder(args);
                 builder.Services.AddCors(options =>
                 {
-                    options.AddDefaultPolicy(builder =>
+                    options.AddPolicy("localhost",builder =>
                     {
-                        builder.WithOrigins("http://localhost:3000")
+                        builder.WithOrigins("http://localhost:5173")
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .AllowCredentials();
-                        builder.WithOrigins("https://demo-signalr-reactjs.vercel.app")
+                        builder.WithOrigins("https://se-100.vercel.app")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                        builder.WithOrigins("http://localhost:3000")
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .AllowCredentials();
@@ -48,15 +53,13 @@ namespace se100_cs
                     dataContext.Database.EnsureCreated();
                     await dataContext.Database.MigrateAsync();
                 }
-                app.UseCors();
 
                 // Configure the HTTP request pipeline.
                     app.UseSwagger();
                     app.UseSwaggerUI();
                     
-                app.UseHttpsRedirection();
+                app.UseCors("localhost");
                 app.UseRouting();
-
                 app.UseAuthorization(); 
                 //app.MapGet("/", () => string.Format("Server E-Management of SE100- {0}", DateTime.Now));
 
