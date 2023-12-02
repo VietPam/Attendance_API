@@ -9,5 +9,7 @@ namespace se100_cs.Model
         [Key]
         public long ID { get; set; }
         public string name { get; set; } = "";
+        public string code { get; set; } = "";
+        public bool isDeleted { get; set; }=false;
     }
 }

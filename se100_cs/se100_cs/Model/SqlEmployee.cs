@@ -16,10 +16,12 @@ namespace se100_cs.Model
         public bool is_deleted { get; set; }=false;
         public string phoneNumber { get; set; } = "";
         public string avatar { get; set; } = "";
-        public DateTime birth_day { get; set; }
+        public DateTime birth_day { get; set; }=DateTime.Now;
         public bool gender { get; set; }=true;
         public string cmnd { get; set; } = "";
         public string address { get; set; } = "";
         public SqlRole? role { get; set; }
+        public SqlPosition? position { get; set; }
+        public SqlDepartment? department { get; set; }
     }
 }
