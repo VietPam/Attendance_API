@@ -9,13 +9,9 @@ namespace se100_cs.Model
         [Key]
         public long ID { get; set; }
         public DateTime time { get; set; }= DateTime.Now;
-
         public attendance_status status { get; set; } = attendance_status.Absent;
-
-        public SqlEmployee employee { get; set; }
+        public SqlEmployee? employee { get; set; }
     }
-
-
     public enum attendance_status
     {
         OnTime,

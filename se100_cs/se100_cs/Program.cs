@@ -11,6 +11,9 @@ namespace se100_cs
         public static MyDepartment api_department=new MyDepartment();
         public static MyPosition api_position=new MyPosition();
         public static MyEmployee api_employee=new MyEmployee();
+        public static MyDashboard api_dashboard = new MyDashboard();
+        public static MyAttendance api_attendance=new MyAttendance();
+        public static MySetting api_setting=new MySetting();
         public static async Task Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()

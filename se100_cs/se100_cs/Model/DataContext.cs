@@ -11,6 +11,7 @@ namespace se100_cs.Model
         public DbSet<SqlAttendance>? attendances { get; set; }
         public DbSet<SqlPosition>? positions { get; set; }
         public DbSet<SqlRole>? roles { get; set; }
+        public DbSet<SqlSetting> settings { get; set; }
 
         public static string randomString(int length)
         {
