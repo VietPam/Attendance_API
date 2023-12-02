@@ -33,20 +33,25 @@ namespace se100_cs.APIs
                 return repsonse;
             }
         }
-        public async Task<bool> createNew(string name, string code)
+        public async Task<int> createNew(string name, string code)
         {
             using (DataContext context = new DataContext())
             {
                 if(string.IsNullOrEmpty(name)|| string.IsNullOrEmpty(code))
                 {
-                    return false;
+                    return 400;
                 }                
+                SqlDepartment? existing_department = context.departments!.Where(s=>s.code == code&& s.isDeleted==false).FirstOrDefault();
+                if(existing_department != null)
+                {
+                    return 409;
+                }
                 SqlDepartment department= new SqlDepartment();
                 department.name = name;
                 department.code = code;
                 context.departments.Add(department);
                 await context.SaveChangesAsync();
-                return true;
+                return 200;
             }
         }
         public async Task<bool> updateOne(long id, string name, string code) 

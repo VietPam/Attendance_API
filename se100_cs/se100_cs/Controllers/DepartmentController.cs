@@ -23,12 +23,13 @@ namespace se100_cs.Controllers
         [Route("createNew")]
         public async Task<IActionResult> createNew([FromBody] Request_Department_DTO dto)
         {
-            bool tmp = await Program.api_department.createNew(dto.name, dto.code);
-            if(tmp)
+            int tmp = await Program.api_department.createNew(dto.name, dto.code);
+            if(tmp==200)
             {
                 return Ok();
             }
-            else return BadRequest();
+            else if (tmp==400)return ValidationProblem();
+            else return BadRequest("Duplicate");
         }
         [HttpPut]
         [Route("updateOne")]
