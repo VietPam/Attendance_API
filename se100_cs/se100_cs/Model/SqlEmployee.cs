@@ -16,12 +16,20 @@ namespace se100_cs.Model
         public bool isDeleted { get; set; }=false;
         public string phoneNumber { get; set; } = "";
         public string avatar { get; set; } = "";
-        public DateTime birth_day { get; set; }=DateTime.Now;
+        public DateTime birth_day { get; set; }=DateTime.UtcNow;
         public bool gender { get; set; }=true;
         public string cmnd { get; set; } = "";
         public string address { get; set; } = "";
-        public SqlRole? role { get; set; }
+        public Role? role { get; set; } = Role.EMPLOYEE;
         public SqlPosition? position { get; set; }
         public SqlDepartment? department { get; set; }
+    }
+
+    public enum Role
+    {
+        ADMIN,
+        DIRECTOR,
+        MANAGER,
+        EMPLOYEE
     }
 }

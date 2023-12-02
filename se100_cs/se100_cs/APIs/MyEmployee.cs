@@ -9,7 +9,15 @@ namespace se100_cs.APIs
         public MyEmployee() { }
         public class Employee_DTO_Response
         {
+            public long ID { get; set; }
             public string email { get; set; } = "";
+            public string fullName { get; set; } = "";
+            public string phoneNumber { get; set; } = "";
+            public string avatar { get; set; } = "";
+            public DateTime birth_day { get; set; } = DateTime.UtcNow;
+            public bool gender { get; set; } = true;
+            public string cmnd { get; set; } = "";
+            public string address { get; set; } = "";
         }
         public List<Employee_DTO_Response> getByDepartmentCode(string departmentCode)
         {
@@ -24,10 +32,17 @@ namespace se100_cs.APIs
                 List<Employee_DTO_Response> repsonse = new List<Employee_DTO_Response>();
                 if (list.Count > 0)
                 {
-                    foreach (SqlEmployee position in list)
+                    foreach (SqlEmployee employee in list)
                     {
                         Employee_DTO_Response item = new Employee_DTO_Response();
-                        item.email = position.email;
+                        item.ID = employee.ID;
+                        item.email = employee.email;
+                        item.fullName = employee.fullName;
+                        item.phoneNumber = employee.phoneNumber;
+                        item.avatar = employee.avatar;
+                        item.gender = employee.gender;
+                        item.cmnd = employee.cmnd;
+                        item.address = employee.address;
                         repsonse.Add(item);
                     }
                 }
@@ -35,11 +50,24 @@ namespace se100_cs.APIs
             }
         }
 
-        public async Task<bool> createNew(string email,  string departmentCode)
+        public string getRole(long employee_id)
         {
             using (DataContext context = new DataContext())
             {
-                if (string.IsNullOrEmpty(email)  || string.IsNullOrEmpty(departmentCode))
+                SqlEmployee employee = context.employees!.Where(s => s.ID == employee_id && s.isDeleted == false).FirstOrDefault();
+                if (employee == null)
+                {
+                    return "NotFound";
+                }
+                return employee.role.ToString();
+            }
+        }
+
+        public async Task<bool> createNew(string email, string fullName, string phoneNumber, DateTime birth_day, bool  gender, string cmnd, string address,string avatar, string departmentCode)
+        {
+            using (DataContext context = new DataContext())
+            {
+                if (string.IsNullOrEmpty(email)  || string.IsNullOrEmpty(departmentCode) || string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(phoneNumber) || string.IsNullOrEmpty(address) || string.IsNullOrEmpty(avatar) || string.IsNullOrEmpty(cmnd))
                 {
                     return false;
                 }
@@ -55,10 +83,91 @@ namespace se100_cs.APIs
                 }
                 SqlEmployee item = new SqlEmployee();
                 item.email = email;
+                item.password = DataContext.randomString(6);
+                item.fullName = fullName;
+                item.phoneNumber = phoneNumber;
+                item.birth_day = birth_day;
+                item.gender = gender;
+                item.cmnd = cmnd;
+                item.avatar = avatar;
+                item.address = address;
                 item.department = department;
                 context.employees!.Add(item);
                 await context.SaveChangesAsync();
                 return true;
+            }
+        }
+
+        public async Task<bool> updateOne(string email, string fullName, string phoneNumber, DateTime birth_day, bool gender, string cmnd, string address, string avatar, long id)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(phoneNumber) || string.IsNullOrEmpty(address) || string.IsNullOrEmpty(avatar) || string.IsNullOrEmpty(cmnd))
+            {
+                return false;
+            }
+            using (DataContext context = new DataContext())
+            {
+                SqlEmployee? employee = context.employees!.Where(s => s.ID == id && s.isDeleted == false).FirstOrDefault();
+                if (employee == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    employee.email = email;
+                    employee.password = DataContext.randomString(6);
+                    employee.fullName = fullName;
+                    employee.phoneNumber = phoneNumber;
+                    employee.birth_day = birth_day;
+                    employee.gender = gender;
+                    employee.cmnd = cmnd;
+                    employee.avatar = avatar;
+                    employee.address = address;
+                    await context.SaveChangesAsync();
+                }
+                return true;
+            }
+        }
+        public async Task<bool> updateRole(string role, long id)
+        {
+            if (string.IsNullOrEmpty(role))
+            {
+                return false;
+            }
+            using (DataContext context = new DataContext())
+            {
+                SqlEmployee? employee = context.employees!.Where(s => s.ID == id && s.isDeleted == false).FirstOrDefault();
+                if (employee == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    if (role == "admin") {
+                    employee.role = Role.ADMIN;
+                    }
+                    else if (role == "director") { employee.role=Role.DIRECTOR; }
+                    else if (role == "manager") { employee.role=Role.MANAGER; }
+                    else  { employee.role=Role.EMPLOYEE; }
+                    await context.SaveChangesAsync();
+                }
+                return true;
+            }
+        }
+        public async Task<bool> deleteOne(long id)
+        {
+            using (DataContext context = new DataContext())
+            {
+                SqlEmployee? employee = context.employees!.Where(s => s.ID == id && s.isDeleted == false).FirstOrDefault();
+                if (employee == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    employee.isDeleted = true;
+                    await context.SaveChangesAsync();
+                    return true;
+                }
             }
         }
     }
