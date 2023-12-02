@@ -24,7 +24,10 @@ namespace se100_cs.Controllers
             public string name { get; set; } = "";
             public string code { get; set; } = "";
         }
-
+        public class Request_Department_DTO_Delete
+        {
+            public string code { get; set; } = "";
+        }
         [HttpPost]
         [Route("createNew")]
         public async Task<IActionResult> createNew([FromBody] Request_Department_DTO_New dto)
@@ -42,6 +45,21 @@ namespace se100_cs.Controllers
         {
             bool tmp = await Program.api_department.updateOne(dto.ID, dto.name, dto.code);
             if( tmp)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpDelete]
+        [Route("deleteOne")]
+        public async Task<IActionResult> deleteOne([FromBody] Request_Department_DTO_Delete dto)
+        {
+            bool tmp = await Program.api_department.deleteOne(dto.code);
+            if (tmp)
             {
                 return Ok();
             }

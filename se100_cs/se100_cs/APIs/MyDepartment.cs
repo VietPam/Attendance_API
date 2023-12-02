@@ -17,7 +17,7 @@ namespace se100_cs.APIs
         {
             using(DataContext context = new DataContext())
             {
-                List<SqlDepartment> list_departments = context.departments.ToList();
+                List<SqlDepartment> list_departments = context.departments.Where(s=>s.isDeleted==false).ToList();
                 List<Department_DTO_Response> repsonse = new List<Department_DTO_Response>();
                 if(list_departments.Count > 0)
                 {
@@ -42,6 +42,7 @@ namespace se100_cs.APIs
                     return false;
                 }                
                 SqlDepartment department= new SqlDepartment();
+                department.ID = DateTime.Now.Ticks;
                 department.name = name;
                 department.code = code;
                 context.departments.Add(department);
@@ -56,7 +57,7 @@ namespace se100_cs.APIs
                 return false;
             }
             using(DataContext context = new DataContext()) { 
-                SqlDepartment department= context.departments!.Where(s=>s.ID==id).FirstOrDefault();
+                SqlDepartment? department= context.departments!.Where(s=>s.ID==id && s.isDeleted==false).FirstOrDefault();
                 if(department==null)
                 {
                     return false;
@@ -68,6 +69,27 @@ namespace se100_cs.APIs
                     await context.SaveChangesAsync();
                 }
                 return true;
+            }
+        }
+        public async Task<bool> deleteOne(string code)
+        {
+            if (string.IsNullOrEmpty(code))
+            {
+                return false;
+            }
+            using(DataContext context = new DataContext())
+            {
+                SqlDepartment? department = context.departments!.Where(s => s.code== code&& s.isDeleted == false).FirstOrDefault();
+                if( department==null)
+                {
+                    return false;
+                }
+                else
+                {
+                    department.isDeleted=true;
+                    await context.SaveChangesAsync();
+                    return true;
+                }
             }
         }
     }
