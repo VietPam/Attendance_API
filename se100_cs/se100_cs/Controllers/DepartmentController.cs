@@ -13,24 +13,15 @@ namespace se100_cs.Controllers
             return Ok( Program.api_department.getAll());
         }
 
-        public class Request_Department_DTO_New
+        public class Request_Department_DTO
         {
             public string name { get; set; } ="";
             public string code { get; set; } ="";
         }
-        public class Request_Department_DTO_Update
-        {
-            public long ID { get; set; } 
-            public string name { get; set; } = "";
-            public string code { get; set; } = "";
-        }
-        public class Request_Department_DTO_Delete
-        {
-            public string code { get; set; } = "";
-        }
+        
         [HttpPost]
         [Route("createNew")]
-        public async Task<IActionResult> createNew([FromBody] Request_Department_DTO_New dto)
+        public async Task<IActionResult> createNew([FromBody] Request_Department_DTO dto)
         {
             bool tmp = await Program.api_department.createNew(dto.name, dto.code);
             if(tmp)
@@ -41,9 +32,9 @@ namespace se100_cs.Controllers
         }
         [HttpPut]
         [Route("updateOne")]
-        public async Task<IActionResult> updateOne([FromBody]Request_Department_DTO_Update dto)
+        public async Task<IActionResult> updateOne([FromBody] Request_Department_DTO dto, long id)
         {
-            bool tmp = await Program.api_department.updateOne(dto.ID, dto.name, dto.code);
+            bool tmp = await Program.api_department.updateOne(id, dto.name, dto.code);
             if( tmp)
             {
                 return Ok();
@@ -56,9 +47,9 @@ namespace se100_cs.Controllers
 
         [HttpDelete]
         [Route("deleteOne")]
-        public async Task<IActionResult> deleteOne([FromBody] Request_Department_DTO_Delete dto)
+        public async Task<IActionResult> deleteOne(string code)
         {
-            bool tmp = await Program.api_department.deleteOne(dto.code);
+            bool tmp = await Program.api_department.deleteOne(code);
             if (tmp)
             {
                 return Ok();

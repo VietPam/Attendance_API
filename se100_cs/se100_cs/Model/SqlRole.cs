@@ -13,6 +13,6 @@ namespace se100_cs.Model
         public string name { get; set; } = "";
         //public string des { get; set; } = "";
         //public string note { get; set; } = "";
-        public bool isdeleted { get; set; } = false;
+        public bool isDeleted { get; set; } = false;
     }
 }

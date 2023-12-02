@@ -42,7 +42,6 @@ namespace se100_cs.APIs
                     return false;
                 }                
                 SqlDepartment department= new SqlDepartment();
-                department.ID = DateTime.Now.Ticks;
                 department.name = name;
                 department.code = code;
                 context.departments.Add(department);

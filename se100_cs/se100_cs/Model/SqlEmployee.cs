@@ -13,7 +13,7 @@ namespace se100_cs.Model
         public string password { get; set; } = "";
         public string token { get; set; } = "";
         public string fullName { get; set; } = "";
-        public bool is_deleted { get; set; }=false;
+        public bool isDeleted { get; set; }=false;
         public string phoneNumber { get; set; } = "";
         public string avatar { get; set; } = "";
         public DateTime birth_day { get; set; }=DateTime.Now;
