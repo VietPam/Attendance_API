@@ -54,3 +54,4 @@
    at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
    at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
    at se100_cs.APIs.MyAttendance.markAttendance(Int64 id) in C:\Users\admin\Documents\GitHub\hk7\be_se100_cs\se100_cs\se100_cs\APIs\MyAttendance.cs:line 87
+2023-12-03 21:03:03.062 +07:00 [ERR] Failed to connect to 13.228.184.177:5432
