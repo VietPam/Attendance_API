@@ -89,6 +89,7 @@ namespace se100_cs.APIs
                 item.birth_day = birth_day;
                 item.gender = gender;
                 item.cmnd = cmnd;
+                item.token = DataContext.randomString(8);
                 item.avatar = avatar;
                 item.address = address;
                 item.department = department;
@@ -169,6 +170,85 @@ namespace se100_cs.APIs
                     return true;
                 }
             }
+        }
+        public string login(string email, string password)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            {
+                return "";
+            }
+            using (DataContext context = new DataContext())
+            {
+                SqlEmployee employee = context.employees!.Where(s => s.email == email).FirstOrDefault();
+                if (employee == null)
+                {
+                    return "";
+                }
+                else
+                {
+                    if (employee.password != password)
+                    {
+                        return "";
+                    }
+                    else
+                    {
+                        return employee.token;
+                    }
+                }
+            }
+            return "";
+        }
+
+        public long checkEmployee(string token)
+        {
+            using (DataContext context = new DataContext())
+            {
+                SqlEmployee employee = context.employees.Where(s=>s.token == token && s.isDeleted==false).FirstOrDefault();
+                if(employee == null)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return employee.ID;
+                }
+            }
+        }
+
+        public int countTotalEmployee()
+        {
+            int count = 0;
+            using(DataContext context = new DataContext())
+            {
+                count = context.employees!.Where(s=>s.isDeleted==false).Count();
+            }
+            return count;
+        }
+        public int countMaleEmployee()
+        {
+            int count = 0;
+            using (DataContext context = new DataContext())
+            {
+                count = context.employees!.Where(s => s.isDeleted == false&& s.gender==true).Count();
+            }
+            return count;
+
+        }
+        public class Total_Employee
+        {
+            public int man { get; set; } = 0;
+            public int woman { get; set; } = 0;
+            public int total { get; set; } = 0;
+        }
+        public Total_Employee getTotal_Employee()
+        {
+            int total = countTotalEmployee(); 
+            int male = countMaleEmployee();
+            Total_Employee today = new Total_Employee();
+            today.man = male;
+            today.total= total;
+            today.woman = total - male;
+            return today;
         }
     }
 }

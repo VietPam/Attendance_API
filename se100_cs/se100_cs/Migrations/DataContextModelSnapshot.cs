@@ -43,7 +43,7 @@ namespace se100_cs.Migrations
 
                     b.HasIndex("employeeID");
 
-                    b.ToTable("tb_attendance");
+                    b.ToTable("tb_attendance", (string)null);
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlDepartment", b =>
@@ -67,7 +67,7 @@ namespace se100_cs.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("tb_department");
+                    b.ToTable("tb_department", (string)null);
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlEmployee", b =>
@@ -134,7 +134,7 @@ namespace se100_cs.Migrations
 
                     b.HasIndex("positionID");
 
-                    b.ToTable("tb_employee");
+                    b.ToTable("tb_employee", (string)null);
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlPayroll", b =>
@@ -158,7 +158,7 @@ namespace se100_cs.Migrations
 
                     b.HasIndex("employeeID");
 
-                    b.ToTable("tb_payroll");
+                    b.ToTable("tb_payroll", (string)null);
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlPosition", b =>
@@ -190,7 +190,7 @@ namespace se100_cs.Migrations
 
                     b.HasIndex("departmentID");
 
-                    b.ToTable("tb_position");
+                    b.ToTable("tb_position", (string)null);
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlRole", b =>
@@ -214,7 +214,7 @@ namespace se100_cs.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("tb_role");
+                    b.ToTable("tb_role", (string)null);
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlSetting", b =>
@@ -247,7 +247,7 @@ namespace se100_cs.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("tb_setting");
+                    b.ToTable("tb_setting", (string)null);
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlAttendance", b =>

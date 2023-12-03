@@ -8,11 +8,11 @@ namespace se100_cs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeeController:ControllerBase
+    public class EmployeeController : ControllerBase
     {
         public class Request_Employee_DTO
         {
-            public string email { get; set; } = "";
+            public string email { get; set; } = "email la id";
             public string fullName { get; set; } = "";
             public string phoneNumber { get; set; } = "";
             public string avatar { get; set; } = "";
@@ -38,12 +38,31 @@ namespace se100_cs.Controllers
         [Route("createNew")]
         public async Task<IActionResult> createNew([FromBody] Request_Employee_DTO dto, string departmentCode)
         {
-            bool tmp = await Program.api_employee.createNew(dto.email,dto.fullName, dto.phoneNumber, dto.birth_day, dto.gender, dto.cmnd, dto.address,dto.avatar, departmentCode);
+            bool tmp = await Program.api_employee.createNew(dto.email, dto.fullName, dto.phoneNumber, dto.birth_day, dto.gender, dto.cmnd, dto.address, dto.avatar, departmentCode);
             if (tmp)
             {
                 return Ok();
             }
             else return BadRequest();
+        }
+        public class login_dto_request
+        {
+            public string email { get; set; }
+            public string password { get; set; }
+        }
+        [HttpPost]
+        [Route("login")]
+        public IActionResult login([FromBody] login_dto_request dto)
+        {
+            string token = Program.api_employee.login(dto.email, dto.password);
+            if (string.IsNullOrEmpty(token))
+            {
+                return BadRequest();
+            }
+            else
+            {
+                return Ok(token);
+            }
         }
 
         [HttpPut]
@@ -64,7 +83,7 @@ namespace se100_cs.Controllers
         [Route("updateRole")]
         public async Task<IActionResult> updateRole(string role, long id)
         {
-            bool tmp = await Program.api_employee.updateRole( role,  id);
+            bool tmp = await Program.api_employee.updateRole(role, id);
             if (tmp)
             {
                 return Ok();
