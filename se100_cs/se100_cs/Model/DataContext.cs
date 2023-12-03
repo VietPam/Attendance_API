@@ -26,5 +26,9 @@ namespace se100_cs.Model
             base.OnConfiguring(optionsBuilder);
             optionsBuilder.UseNpgsql(configSql);
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

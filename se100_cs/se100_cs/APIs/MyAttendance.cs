@@ -19,7 +19,7 @@ namespace se100_cs.APIs
             List<Attendance_DTO_Response> response = new List<Attendance_DTO_Response>();
             using (DataContext context = new DataContext())
             {
-                List<SqlAttendance>? list = context.attendances!.Include(s => s.employee).Where(s => s.time.Day == day && s.time.Month == month && s.time.Year == year).ToList();
+                List<SqlAttendance>? list = context.attendances!.Include(s => s.employee).Where(s =>s.employee.isDeleted==false&& s.time.Day == day && s.time.Month == month && s.time.Year == year).ToList();
 
                 if (list.Count > 0)
                 {
@@ -34,6 +34,33 @@ namespace se100_cs.APIs
                 }
             }
             return response;
+        }
+
+        public async Task<bool> createNew(long emp_id, DateTime time)
+        {
+            DateTime now = DateTime.Now;
+            using(DataContext context = new DataContext())
+            {
+                SqlSetting setting = context.settings!.FirstOrDefault();
+                //int hour
+                
+                //SqlEmployee? employee= context.employees!.Where(s=>s.isDeleted==false && s.ID==emp_id).FirstOrDefault();
+                //if (employee==null)
+                //{
+                //    return false;
+                //}    
+
+                //SqlAttendance? existing = context.attendances!.Include(s => s.employee).Where(s => s.employee.ID == emp_id).FirstOrDefault();
+                //if (existing != null)
+                //{
+                //    return false;
+                //}
+                //SqlAttendance attendance= new SqlAttendance();
+                //attendance.employee = employee;
+                //attendance.time = now;
+                //if (now.Hour<)
+            }
+            return false;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using se100_cs.Model;
@@ -11,9 +12,10 @@ using se100_cs.Model;
 namespace se100_cs.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231203032749_1.0.5")]
+    partial class _105
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -219,12 +221,6 @@ namespace se100_cs.Migrations
 
             modelBuilder.Entity("se100_cs.Model.SqlSetting", b =>
                 {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
-
                     b.Property<string>("company_code")
                         .IsRequired()
                         .HasColumnType("text");
@@ -244,8 +240,6 @@ namespace se100_cs.Migrations
 
                     b.Property<int>("start_time_minute")
                         .HasColumnType("integer");
-
-                    b.HasKey("ID");
 
                     b.ToTable("tb_setting");
                 });
