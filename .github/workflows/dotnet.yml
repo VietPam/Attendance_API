@@ -24,6 +24,8 @@ jobs:
     #   run: dotnet restore
     # - name: Build
     #   run: dotnet build --no-restore
+    - name: Change to the se100_cs/se100_cs directory
+      run: cd se100_cs/se100_cs
     - name: Build and Publish Docker Image
       run: |
             docker login -u 20522153 -p 123456789 docker.io
