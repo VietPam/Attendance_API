@@ -1,4 +1,5 @@
 ﻿using MessagePack.Formatters;
+using Microsoft.EntityFrameworkCore;
 using se100_cs.Model;
 
 namespace se100_cs.APIs
@@ -12,6 +13,9 @@ namespace se100_cs.APIs
             public long ID { get; set; }
             public string name { get; set; } = "";
             public string code { get; set; } = "";
+            public long idBoss { get; set; } = -1;
+            public string nameBoss { get; set; } = "";
+            public int numberEmployee { get; set; } = 0;
         }
         public  List<Department_DTO_Response> getAll()
         {
@@ -23,10 +27,19 @@ namespace se100_cs.APIs
                 {
                     foreach( SqlDepartment department in list_departments)
                     {
+                        SqlEmployee? head = context.employees!.Include(s=>s.department).Where(s=>s.isDeleted == false && s.department==department).FirstOrDefault();
                         Department_DTO_Response item = new Department_DTO_Response();
                         item.ID = department.ID;
                         item.name = department.name;
                         item.code = department.code;
+                        if(head != null)
+                        {
+                            item.idBoss = head.ID;
+                            item.nameBoss = head.fullName;
+                        }
+                        int count_employee = context.employees!.Include(s => s.department).Where(s => s.isDeleted == false && s.department == department).Count();
+                        item.numberEmployee = count_employee; 
+                        //SqlEmployee
                         repsonse.Add(item);
                     }
                 }
@@ -46,9 +59,14 @@ namespace se100_cs.APIs
                 {
                     return 409;
                 }
+                SqlPosition position = new SqlPosition();
                 SqlDepartment department= new SqlDepartment();
                 department.name = name;
                 department.code = code;
+                position.department = department;
+                position.title = "Head";
+                position.code = "HEAD" ;
+                context.positions.Add(position);
                 context.departments.Add(department);
                 await context.SaveChangesAsync();
                 return 200;

@@ -122,6 +122,8 @@ namespace se100_cs.APIs
                 Employees_Today today = new Employees_Today();
                 using (DataContext context = new DataContext())
                 {
+
+
                     if (ngay_hom_nay - (hom_nay_la_thu - i) < 1)
                     {
                         if (thang_truoc % 2 == 1)
@@ -134,7 +136,7 @@ namespace se100_cs.APIs
                         }
                         hom_nay_la_thu = i;
                     }
-                    int attendance = context.attendances.Where(s => s.status == 0 && s.time.Day == ngay_hom_nay - (hom_nay_la_thu - i)).Count();
+                    int attendance = context.attendances!.Where(s => s.status == 0 && s.time.Day == ngay_hom_nay - (hom_nay_la_thu - i)).Count();
                     int late_coming = context.attendances!.Where(s => s.status == 1 && s.time.Day == ngay_hom_nay - (hom_nay_la_thu - i)).Count();
                     int total = Program.api_employee.countTotalEmployee();
                     int absent = total - attendance - late_coming;

@@ -1,0 +1,6 @@
+2023-12-04 09:44:48.314 +07:00 [ERR] 42P07: relation "tb_department" already exists
+2023-12-04 09:45:02.384 +07:00 [ERR] 42P07: relation "tb_department" already exists
+2023-12-04 09:45:43.775 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-04 09:47:42.761 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-04 09:47:48.760 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-04 09:47:59.900 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.

@@ -17,6 +17,10 @@ namespace se100_cs.Controllers
         {
             public string name { get; set; } ="";
             public string code { get; set; } ="";
+            public string idBoss { get; set; } = "";
+            public string nameBoss { get; set; } = "";
+            public int numberEmployee { get; set; } = 0;
+
         }
         
         [HttpPost]
