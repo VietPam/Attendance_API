@@ -45,35 +45,6 @@ namespace se100_cs.APIs
                 return item;
             }
         }
-        public async Task<bool> createNew(string company_code, string company_name, int start_time_hour, int start_time_minute, int salary_per_coef, int payment_date)
-        {
-            using (DataContext context = new DataContext())
-            {
-                if (string.IsNullOrEmpty(company_code) || string.IsNullOrEmpty(company_name))
-                {
-                    return false;
-                }
-                int company_count = context.settings!.ToList().Count();
-
-                if (company_count > 1)
-                {
-                    return false;
-                }
-                else
-                {
-                    SqlSetting item = new SqlSetting();
-                    item.company_code = company_code;
-                    item.company_name = company_name;
-                    item.start_time_hour = start_time_hour;
-                    item.start_time_minute = start_time_minute;
-                    item.salary_per_coef = salary_per_coef;
-                    item.payment_date = payment_date;
-                    context.settings!.Add(item);
-                    await context.SaveChangesAsync();
-                }
-                return true;
-            }
-        }
         public async Task<bool> updateOne(string company_code, string company_name, int start_time_hour, int start_time_minute, int salary_per_coef, int payment_date)
         {
             if (string.IsNullOrEmpty(company_code))

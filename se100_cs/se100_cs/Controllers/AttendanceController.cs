@@ -7,19 +7,19 @@ namespace se100_cs.Controllers
     [ApiController]
     public class AttendanceController:ControllerBase
     {
-        [HttpGet]
-        [Route("getListByDate")]
-        public IActionResult getListByDate(int day=3 , int month=12, int year =2023)
-        {
-            return Ok(Program.api_attendance.getListByDate(day,month,year));
-        }
+        //[HttpGet]
+        //[Route("getListByDate")]
+        //public IActionResult getListByDate(int day, int month, int year)
+        //{
+        //    return Ok(Program.api_attendance.getListByDate(day,month,year));
+        //}
 
-        [HttpPost]
-        [Route("createNew")]
-        public async Task<IActionResult> markAttendance(string token )
-        {
-            long id = Program.api_employee.checkEmployee(token);
-            return Ok(await Program.api_attendance.markAttendance(id));
-        }
+        //[HttpPost]
+        //[Route("createNew")]
+        //public async Task<IActionResult> markAttendance(string token )
+        //{
+        //    long id = Program.api_employee.checkEmployee(token);
+        //    return Ok(await Program.api_attendance.markAttendance(id));
+        //}
     }
 }

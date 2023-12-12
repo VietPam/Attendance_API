@@ -11,5 +11,6 @@ namespace se100_cs.Model
         public string name { get; set; } = "";
         public string code { get; set; } = "";
         public bool isDeleted { get; set; }=false;
+        public List<SqlEmployee>? employees { get; set; }   
     }
 }

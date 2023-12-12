@@ -16,7 +16,7 @@ namespace se100_cs.Controllers
             public string fullName { get; set; } = "";
             public string phoneNumber { get; set; } = "";
             public string avatar { get; set; } = "";
-            public DateTime birth_day { get; set; } = DateTime.UtcNow;
+            public DateTime birth_day { get; set; } = DateTime.UtcNow.ToUniversalTime();
             public bool gender { get; set; } = true;
             public string cmnd { get; set; } = "";
             public string address { get; set; } = "";
@@ -26,24 +26,6 @@ namespace se100_cs.Controllers
         public IActionResult getByDepartmentCode(string departmentCode)
         {
             return Ok(Program.api_employee.getByDepartmentCode(departmentCode));
-        }
-        [HttpGet]
-        [Route("getRole")]
-        public IActionResult getRole(long id)
-        {
-            return Ok(Program.api_employee.getRole(id));
-        }
-
-        [HttpPost]
-        [Route("createNew")]
-        public async Task<IActionResult> createNew([FromBody] Request_Employee_DTO dto, string departmentCode)
-        {
-            bool tmp = await Program.api_employee.createNew(dto.email, dto.fullName, dto.phoneNumber, dto.birth_day, dto.gender, dto.cmnd, dto.address, dto.avatar, departmentCode);
-            if (tmp)
-            {
-                return Ok();
-            }
-            else return BadRequest();
         }
         public class login_dto_request
         {

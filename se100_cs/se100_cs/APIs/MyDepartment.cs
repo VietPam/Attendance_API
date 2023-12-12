@@ -17,35 +17,35 @@ namespace se100_cs.APIs
             public string nameBoss { get; set; } = "";
             public int numberEmployee { get; set; } = 0;
         }
-        public  List<Department_DTO_Response> getAll()
-        {
-            using(DataContext context = new DataContext())
-            {
-                List<SqlDepartment> list_departments = context.departments.Where(s=>s.isDeleted==false).ToList();
-                List<Department_DTO_Response> repsonse = new List<Department_DTO_Response>();
-                if(list_departments.Count > 0)
-                {
-                    foreach( SqlDepartment department in list_departments)
-                    {
-                        SqlEmployee? head = context.employees!.Include(s=>s.department).Where(s=>s.isDeleted == false && s.department==department).FirstOrDefault();
-                        Department_DTO_Response item = new Department_DTO_Response();
-                        item.ID = department.ID;
-                        item.name = department.name;
-                        item.code = department.code;
-                        if(head != null)
-                        {
-                            item.idBoss = head.ID;
-                            item.nameBoss = head.fullName;
-                        }
-                        int count_employee = context.employees!.Include(s => s.department).Where(s => s.isDeleted == false && s.department == department).Count();
-                        item.numberEmployee = count_employee; 
-                        //SqlEmployee
-                        repsonse.Add(item);
-                    }
-                }
-                return repsonse;
-            }
-        }
+        //public  List<Department_DTO_Response> getAll()
+        //{
+        //    using(DataContext context = new DataContext())
+        //    {
+        //        List<SqlDepartment> list_departments = context.departments.Where(s=>s.isDeleted==false).ToList();
+        //        List<Department_DTO_Response> repsonse = new List<Department_DTO_Response>();
+        //        if(list_departments.Count > 0)
+        //        {
+        //            foreach( SqlDepartment department in list_departments)
+        //            {
+        //                SqlEmployee? head = context.employees!.Include(s=>s.department).Where(s=>s.isDeleted == false && s.department==department).FirstOrDefault();
+        //                Department_DTO_Response item = new Department_DTO_Response();
+        //                item.ID = department.ID;
+        //                item.name = department.name;
+        //                item.code = department.code;
+        //                if(head != null)
+        //                {
+        //                    item.idBoss = head.ID;
+        //                    item.nameBoss = head.fullName;
+        //                }
+        //                int count_employee = context.employees!.Include(s => s.department).Where(s => s.isDeleted == false && s.department == department).Count();
+        //                item.numberEmployee = count_employee; 
+        //                //SqlEmployee
+        //                repsonse.Add(item);
+        //            }
+        //        }
+        //        return repsonse;
+        //    }
+        //}
         public async Task<int> createNew(string name, string code)
         {
             using (DataContext context = new DataContext())

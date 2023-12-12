@@ -23,12 +23,12 @@ namespace se100_cs.APIs
         {
             using (DataContext context = new DataContext())
             {
-                SqlDepartment? department = context.departments!.Where(s => s.code == departmentCode && s.isDeleted==false).FirstOrDefault();
+                SqlDepartment? department = context.departments!.Where(s => s.code == departmentCode && s.isDeleted == false).Include(s=>s.employees).FirstOrDefault();
                 if (department == null)
                 {
                     return new List<Employee_DTO_Response>();
                 }
-                List<SqlEmployee>? list = context.employees!.Include(s => s.department).Where(s => s.isDeleted == false && s.department!.code == departmentCode ).ToList();
+                List<SqlEmployee>? list = department.employees;
                 List<Employee_DTO_Response> repsonse = new List<Employee_DTO_Response>();
                 if (list.Count > 0)
                 {
@@ -63,41 +63,41 @@ namespace se100_cs.APIs
             }
         }
 
-        public async Task<bool> createNew(string email, string fullName, string phoneNumber, DateTime birth_day, bool  gender, string cmnd, string address,string avatar, string departmentCode)
-        {
-            using (DataContext context = new DataContext())
-            {
-                if (string.IsNullOrEmpty(email)  || string.IsNullOrEmpty(departmentCode) || string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(phoneNumber) || string.IsNullOrEmpty(address) || string.IsNullOrEmpty(avatar) || string.IsNullOrEmpty(cmnd))
-                {
-                    return false;
-                }
-                SqlDepartment? department = context.departments!.Where(s => s.code == departmentCode).FirstOrDefault();
-                if (department == null)
-                {
-                    return false;
-                }
-                SqlEmployee? existing = context.employees!.Where(s=>s.email == email).FirstOrDefault();
-                if (existing != null)
-                {
-                    return false;
-                }
-                SqlEmployee item = new SqlEmployee();
-                item.email = email;
-                item.password = DataContext.randomString(6);
-                item.fullName = fullName;
-                item.phoneNumber = phoneNumber;
-                item.birth_day = birth_day;
-                item.gender = gender;
-                item.cmnd = cmnd;
-                item.token = DataContext.randomString(8);
-                item.avatar = avatar;
-                item.address = address;
-                item.department = department;
-                context.employees!.Add(item);
-                await context.SaveChangesAsync();
-                return true;
-            }
-        }
+        //public async Task<bool> createNew(string email, string fullName, string phoneNumber, DateTime birth_day, bool  gender, string cmnd, string address,string avatar, string departmentCode)
+        //{
+        //    using (DataContext context = new DataContext())
+        //    {
+        //        if (string.IsNullOrEmpty(email)  || string.IsNullOrEmpty(departmentCode) || string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(phoneNumber) || string.IsNullOrEmpty(address) || string.IsNullOrEmpty(avatar) || string.IsNullOrEmpty(cmnd))
+        //        {
+        //            return false;
+        //        }
+        //        SqlDepartment? department = context.departments!.Where(s => s.code == departmentCode).FirstOrDefault();
+        //        if (department == null)
+        //        {
+        //            return false;
+        //        }
+        //        SqlEmployee? existing = context.employees!.Where(s=>s.email == email).FirstOrDefault();
+        //        if (existing != null)
+        //        {
+        //            return false;
+        //        }
+        //        SqlEmployee item = new SqlEmployee();
+        //        item.email = email;
+        //        item.password = DataContext.randomString(6);
+        //        item.fullName = fullName;
+        //        item.phoneNumber = phoneNumber;
+        //        item.birth_day = birth_day;
+        //        item.gender = gender;
+        //        item.cmnd = cmnd;
+        //        item.token = DataContext.randomString(8);
+        //        item.avatar = avatar;
+        //        item.address = address;
+        //        item.department = department;
+        //        context.employees!.Add(item);
+        //        await context.SaveChangesAsync();
+        //        return true;
+        //    }
+        //}
 
         public async Task<bool> updateOne(string email, string fullName, string phoneNumber, DateTime birth_day, bool gender, string cmnd, string address, string avatar, long id)
         {

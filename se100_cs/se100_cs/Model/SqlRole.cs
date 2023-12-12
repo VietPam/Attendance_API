@@ -11,8 +11,6 @@ namespace se100_cs.Model
         public long ID { get; set; }
         public string code { get; set; } = "";
         public string name { get; set; } = "";
-        //public string des { get; set; } = "";
-        //public string note { get; set; } = "";
         public bool isDeleted { get; set; } = false;
     }
 }

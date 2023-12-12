@@ -1,0 +1,17 @@
+2023-12-12 20:03:03.601 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-12 20:03:15.847 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-12 20:09:01.516 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-12 20:09:11.718 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-12 20:14:09.645 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-12 20:14:28.680 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-12 20:14:45.736 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-12 20:14:51.051 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-12 20:15:00.478 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-12 20:15:11.481 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-12 20:15:17.029 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-12 20:20:57.486 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-12 20:21:01.480 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-12 20:41:25.510 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-12 20:41:36.498 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-12 21:35:41.139 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-12 21:35:48.295 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.

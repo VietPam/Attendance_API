@@ -6,12 +6,12 @@ namespace se100_cs.Controllers
     [ApiController]
     public class DepartmentController: ControllerBase
     {
-        [HttpGet]
-        [Route("getAll")]
-        public IActionResult getAll()
-        {
-            return Ok( Program.api_department.getAll());
-        }
+        //[HttpGet]
+        //[Route("getAll")]
+        //public IActionResult getAll()
+        //{
+        //    return Ok( Program.api_department.getAll());
+        //}
 
         public class Request_Department_DTO
         {

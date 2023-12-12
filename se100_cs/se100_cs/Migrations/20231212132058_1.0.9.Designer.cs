@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using se100_cs.Model;
@@ -11,9 +12,10 @@ using se100_cs.Model;
 namespace se100_cs.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231212132058_1.0.9")]
+    partial class _109
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,30 +23,6 @@ namespace se100_cs.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("se100_cs.Model.SqlATDDetail", b =>
-                {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
-
-                    b.Property<long>("attendanceID")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("employeeId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("status")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("attendanceID");
-
-                    b.ToTable("tb_attendance_detail");
-                });
 
             modelBuilder.Entity("se100_cs.Model.SqlAttendance", b =>
                 {
@@ -54,16 +32,18 @@ namespace se100_cs.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
 
-                    b.Property<int>("day")
+                    b.Property<long?>("employeeID")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("status")
                         .HasColumnType("integer");
 
-                    b.Property<int>("month")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("year")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("time")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("employeeID");
 
                     b.ToTable("tb_attendance");
                 });
@@ -272,15 +252,13 @@ namespace se100_cs.Migrations
                     b.ToTable("tb_setting");
                 });
 
-            modelBuilder.Entity("se100_cs.Model.SqlATDDetail", b =>
+            modelBuilder.Entity("se100_cs.Model.SqlAttendance", b =>
                 {
-                    b.HasOne("se100_cs.Model.SqlAttendance", "attendance")
-                        .WithMany("list_attendance")
-                        .HasForeignKey("attendanceID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("se100_cs.Model.SqlEmployee", "employee")
+                        .WithMany()
+                        .HasForeignKey("employeeID");
 
-                    b.Navigation("attendance");
+                    b.Navigation("employee");
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlEmployee", b =>
@@ -290,7 +268,7 @@ namespace se100_cs.Migrations
                         .HasForeignKey("departmentID");
 
                     b.HasOne("se100_cs.Model.SqlPosition", "position")
-                        .WithMany("employees")
+                        .WithMany()
                         .HasForeignKey("positionID");
 
                     b.Navigation("department");
@@ -316,17 +294,7 @@ namespace se100_cs.Migrations
                     b.Navigation("department");
                 });
 
-            modelBuilder.Entity("se100_cs.Model.SqlAttendance", b =>
-                {
-                    b.Navigation("list_attendance");
-                });
-
             modelBuilder.Entity("se100_cs.Model.SqlDepartment", b =>
-                {
-                    b.Navigation("employees");
-                });
-
-            modelBuilder.Entity("se100_cs.Model.SqlPosition", b =>
                 {
                     b.Navigation("employees");
                 });
