@@ -14,52 +14,52 @@ namespace se100_cs.Controllers
             public long salary_coeffcient { get; set; } = 0;
 
         }
-        [HttpGet]
-        [Route("getByDepartmentCode")]
-        public IActionResult getByDepartmentCode(string departmentCode)
-        {
-             return Ok(Program.api_position.getByDepartmentCode(departmentCode));
-        }
+        //[HttpGet]
+        //[Route("getByDepartmentCode")]
+        //public IActionResult getByDepartmentCode(string departmentCode)
+        //{
+        //     return Ok(Program.api_position.getByDepartmentCode(departmentCode));
+        //}
 
-        [HttpPost]
-        [Route("createNew")]
-        public async Task<IActionResult> createNew([FromBody] Request_Position_DTO dto, string departmentCode)
-        {
-            bool tmp = await Program.api_position.createNew(dto.title, dto.code,dto.salary_coeffcient,departmentCode);
-            if (tmp)
-            {
-                return Ok();
-            }
-            else return BadRequest();
-        }
-        [HttpPut]
-        [Route("updateOne")]
-        public async Task<IActionResult> updateOne([FromBody] Request_Position_DTO dto, long id)
-        {
-            bool tmp = await Program.api_position.updateOne(id, dto.title, dto.code, dto.salary_coeffcient);
-            if (tmp)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
+        //[HttpPost]
+        //[Route("createNew")]
+        //public async Task<IActionResult> createNew([FromBody] Request_Position_DTO dto, string departmentCode)
+        //{
+        //    bool tmp = await Program.api_position.createNew(dto.title, dto.code,dto.salary_coeffcient,departmentCode);
+        //    if (tmp)
+        //    {
+        //        return Ok();
+        //    }
+        //    else return BadRequest();
+        //}
+        //[HttpPut]
+        //[Route("updateOne")]
+        //public async Task<IActionResult> updateOne([FromBody] Request_Position_DTO dto, long id)
+        //{
+        //    bool tmp = await Program.api_position.updateOne(id, dto.title, dto.code, dto.salary_coeffcient);
+        //    if (tmp)
+        //    {
+        //        return Ok();
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
 
-        [HttpDelete]
-        [Route("deleteOne")]
-        public async Task<IActionResult> deleteOne(long id)
-        {
-            bool tmp = await Program.api_position.deleteOne(id);
-            if (tmp)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
+        //[HttpDelete]
+        //[Route("deleteOne")]
+        //public async Task<IActionResult> deleteOne(long id)
+        //{
+        //    bool tmp = await Program.api_position.deleteOne(id);
+        //    if (tmp)
+        //    {
+        //        return Ok();
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
     }
 }

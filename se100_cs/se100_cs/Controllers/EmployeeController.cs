@@ -61,20 +61,20 @@ namespace se100_cs.Controllers
                 return BadRequest();
             }
         }
-        [HttpPut]
-        [Route("updateRole")]
-        public async Task<IActionResult> updateRole(string role, long id)
-        {
-            bool tmp = await Program.api_employee.updateRole(role, id);
-            if (tmp)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
+        //[HttpPut]
+        //[Route("updateRole")]
+        //public async Task<IActionResult> updateRole(string role, long id)
+        //{
+        //    bool tmp = await Program.api_employee.updateRole(role, id);
+        //    if (tmp)
+        //    {
+        //        return Ok();
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
         [HttpDelete]
         [Route("deleteOne")]
         public async Task<IActionResult> deleteOne(long id)

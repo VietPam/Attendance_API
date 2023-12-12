@@ -9,6 +9,7 @@ namespace se100_cs.Model
         public DbSet<SqlDepartment> departments { get; set; }
         public DbSet<SqlPayroll> payrolls { get; set; }
         public DbSet<SqlAttendance>? attendances { get; set; }
+        public DbSet<SqlATDDetail> attendance_details {  get; set; }
         public DbSet<SqlPosition>? positions { get; set; }
         public DbSet<SqlRole>? roles { get; set; }
         public DbSet<SqlSetting> settings { get; set; }

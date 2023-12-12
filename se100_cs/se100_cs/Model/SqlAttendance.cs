@@ -11,11 +11,6 @@ namespace se100_cs.Model
         public int day { get; set; }
         public int month { get; set; }
         public int year { get; set; }
-        public List<SqlATDDetail> list_attendance { get; set; }
-        //0 la dung gio
-        //1 la tre gio
-        //2 la khong di lam
-        //public int status { get; set; } = 2;
-        //public SqlEmployee? employee { get; set; }
+        public List<SqlATDDetail>? list_attendance { get; set; } = new List<SqlATDDetail>();
     }
 }
