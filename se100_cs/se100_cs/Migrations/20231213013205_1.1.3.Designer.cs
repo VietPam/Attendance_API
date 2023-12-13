@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using se100_cs.Model;
@@ -11,9 +12,10 @@ using se100_cs.Model;
 namespace se100_cs.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231213013205_1.1.3")]
+    partial class _113
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,7 +50,7 @@ namespace se100_cs.Migrations
 
                     b.HasIndex("employeeID");
 
-                    b.ToTable("tb_attendance_detail", (string)null);
+                    b.ToTable("tb_attendance_detail");
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlAttendance", b =>
@@ -70,7 +72,7 @@ namespace se100_cs.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("tb_attendance", (string)null);
+                    b.ToTable("tb_attendance");
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlDepartment", b =>
@@ -94,7 +96,7 @@ namespace se100_cs.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("tb_department", (string)null);
+                    b.ToTable("tb_department");
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlEmployee", b =>
@@ -161,7 +163,7 @@ namespace se100_cs.Migrations
 
                     b.HasIndex("positionID");
 
-                    b.ToTable("tb_employee", (string)null);
+                    b.ToTable("tb_employee");
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlPayroll", b =>
@@ -185,7 +187,7 @@ namespace se100_cs.Migrations
 
                     b.HasIndex("employeeID");
 
-                    b.ToTable("tb_payroll", (string)null);
+                    b.ToTable("tb_payroll");
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlPosition", b =>
@@ -217,7 +219,7 @@ namespace se100_cs.Migrations
 
                     b.HasIndex("departmentID");
 
-                    b.ToTable("tb_position", (string)null);
+                    b.ToTable("tb_position");
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlRole", b =>
@@ -241,7 +243,7 @@ namespace se100_cs.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("tb_role", (string)null);
+                    b.ToTable("tb_role");
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlSetting", b =>
@@ -274,7 +276,7 @@ namespace se100_cs.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("tb_setting", (string)null);
+                    b.ToTable("tb_setting");
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlATDDetail", b =>

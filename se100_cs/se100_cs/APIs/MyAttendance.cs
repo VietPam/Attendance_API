@@ -20,9 +20,19 @@ namespace se100_cs.APIs
         public List<Attendance_DTO_Response> getListByDate(int day, int month, int year)
         {
             List<Attendance_DTO_Response> response = new List<Attendance_DTO_Response>();
+            if (year >= DateTime.Now.Year)
+            {
+                if (month >= DateTime.Now.Month)
+                {
+                    if (day > DateTime.Now.Day)
+                    {
+                        return response;
+                    }
+                }
+            }
             using (DataContext context = new DataContext())
             {
-                SqlAttendance atd = context.attendances.Where(s => s.year == year && s.month == month && s.day == day).Include(s => s.list_attendance).FirstOrDefault();
+                SqlAttendance atd = context.attendances.Where(s => s.year == year && s.month == month && s.day == day).Include(s => s.list_attendance).ThenInclude(s => s.employee).ThenInclude(s => s.department).FirstOrDefault();
                 if (atd == null)
                 {
                     return response;
@@ -35,15 +45,12 @@ namespace se100_cs.APIs
                     item.hour = detail.time.Hour;
                     item.minute = detail.time.Minute;
                     item.status = attendance_status(detail.status);
-                    SqlEmployee? employee = context.employees!.Where(s => s.isDeleted == false && s.ID == detail.employeeId).Include(s => s.department).FirstOrDefault();
-                    if (employee == null)
-                    {
-                        continue;
-                    }
-                    item.emp_name = employee.fullName;
-                    item.department_code = employee.department.code;
+                    item.emp_name = detail.employee.fullName;
+                    item.department_code = detail.employee.department.code;
                     response.Add(item);
                 }
+                response = response.OrderBy(s => s.hour).ToList();
+
             }
             return response;
         }
@@ -54,7 +61,7 @@ namespace se100_cs.APIs
             if (i == 1) return "Late";
             return "Absent";
         }
-        public async Task<bool> init_attendance_async()
+        public async Task<bool> init_attendance_today_async()
         {
             DateTime now = DateTime.Now;
             using (DataContext context = new DataContext())
@@ -71,14 +78,14 @@ namespace se100_cs.APIs
                     await context.SaveChangesAsync();
                 }
 
-                attendance = context.attendances!.Where(s => s.year == DateTime.Now.Year && s.month == DateTime.Now.Month && s.day == now.Day).Include(s => s.list_attendance).FirstOrDefault();
+                attendance = context.attendances!.Where(s => s.year == now.Year && s.month == now.Month && s.day == now.Day).Include(s => s.list_attendance).FirstOrDefault();
                 if (attendance.list_attendance != null && !attendance.list_attendance.Any())
                 {
                     List<SqlEmployee>? allEmployees = context.employees.Where(s => s.isDeleted == false).ToList();
                     foreach (SqlEmployee emp in allEmployees)
                     {
                         SqlATDDetail detail = new SqlATDDetail();
-                        detail.employeeId = emp.ID;
+                        detail.employee = emp;
                         detail.attendance = attendance;
                         context.attendance_details.Add(detail);
                     }
@@ -90,10 +97,10 @@ namespace se100_cs.APIs
         public async Task<string> markAttendance(long employee_id)
         {
             DateTime now = DateTime.Now;
-            SqlSetting? setting = new SqlSetting();
+
             using (DataContext context = new DataContext())
             {
-                    setting = context.settings!.FirstOrDefault();
+                SqlSetting? setting = context.settings!.FirstOrDefault();
                 int start_time_hour = setting.start_time_hour;
                 int start_time_minute = setting.start_time_minute;
 
@@ -102,39 +109,52 @@ namespace se100_cs.APIs
                 {
                     return "employee null";
                 }
-                 
-
-                await init_attendance_async();
 
 
-                SqlAttendance? attendance = context.attendances!.Where(s => s.year == DateTime.Now.Year && s.month == DateTime.Now.Month && s.day == now.Day).Include(s => s.list_attendance).FirstOrDefault();
+                await init_attendance_today_async();
 
-                SqlATDDetail? existing = attendance.list_attendance.Where(s => s.employeeId == employee.ID).FirstOrDefault();
-                if (existing.time.CompareTo(new TimeOnly(1, 1, 1)) == 0)
+
+                SqlAttendance? attendance = context.attendances!.Where(s => s.year == now.Year && s.month == now.Month && s.day == now.Day).Include(s => s.list_attendance).FirstOrDefault();
+
+                SqlATDDetail? existing = attendance.list_attendance.Where(s => s.employee == employee).FirstOrDefault();
+                if (existing.time.CompareTo(new TimeOnly(23, 59)) == 0)
                 {
                     if (now.Hour * 60 + now.Minute > start_time_hour * 60 + start_time_minute)
                     {
                         existing.status = 1;
                         existing.time = TimeOnly.FromDateTime(now);
+                        // gọi signalr
                     }
                     else
                     {
                         existing.status = 0;
                         existing.time = TimeOnly.FromDateTime(now);
+                        // gọi signalr
                     }
                 }
                 await context.SaveChangesAsync();
                 return attendance_status(existing.status);
             }
         }
-        public string get_attendance_status(string token)
+        public async Task<string> check(string token)
         {
             DateTime now = DateTime.Now;
             using (DataContext context = new DataContext())
             {
-
+                SqlEmployee? employee = context.employees!.Where(s => s.token==token).FirstOrDefault();
+                if (employee == null)
+                {
+                    return "employee null";
+                }
+                await init_attendance_today_async();
+                SqlAttendance? attendance = context.attendances!.Where(s => s.year == now.Year && s.month == now.Month && s.day == now.Day).Include(s => s.list_attendance).FirstOrDefault();
+                SqlATDDetail? existing = attendance.list_attendance.Where(s => s.employee == employee).FirstOrDefault();
+                if (existing == null)
+                {
+                    return "Absent";
+                }
+                return attendance_status(existing.status);
             }
-            return "";
         }
         public class Employees_Today
         {

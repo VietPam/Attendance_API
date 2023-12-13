@@ -13,19 +13,19 @@ namespace se100_cs.Controllers
         {
             return Ok(Program.api_attendance.getListByDate(day, month, year));
         }
-        [HttpGet]
-        [Route("test")]
-        public IActionResult test()
-        {
-            return Ok(Program.api_attendance.getListByDate(13, 12, 2023));
-        }
 
         [HttpPost]
-        [Route("createNew")]
+        [Route("checkin")]
         public async Task<IActionResult> markAttendance(string token)
         {
             long id = Program.api_employee.checkEmployee(token);
             return Ok(await Program.api_attendance.markAttendance(id));
+        }
+        [HttpGet]
+        [Route("check")]
+        public async Task<IActionResult> check(string token)
+        {
+            return Ok( await Program.api_attendance.check(token));
         }
     }
 }

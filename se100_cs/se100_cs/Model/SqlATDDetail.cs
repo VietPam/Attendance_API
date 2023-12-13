@@ -8,12 +8,12 @@ namespace se100_cs.Model
     {
         [Key]
         public long ID { get; set; }
-        public TimeOnly time { get; set; } =new TimeOnly(1,1,1);
+        public TimeOnly time { get; set; } =new TimeOnly(23,59);
         public int status { get; set; } = 2;
         //0 la dung gio
         //1 la tre gio
         //2 la khong di lam
-        public long employeeId { get; set; }
+        public SqlEmployee employee { get; set; }
         public SqlAttendance attendance { get; set; }
     }
 }

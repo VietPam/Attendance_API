@@ -4,7 +4,7 @@ namespace se100_cs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DepartmentController: ControllerBase
+    public class DepartmentController : ControllerBase
     {
         //[HttpGet]
         //[Route("getAll")]
@@ -15,17 +15,19 @@ namespace se100_cs.Controllers
 
         public class Request_Department_DTO
         {
-            public string name { get; set; } ="";
-            public string code { get; set; } ="";
+            public string name { get; set; } = "";
+            public string code { get; set; } = "";
             public string idBoss { get; set; } = "";
             public string nameBoss { get; set; } = "";
             public int numberEmployee { get; set; } = 0;
-
         }
-        
+        public class Request_New_Department{
+            public string name { get; set; } = "";
+            public string code { get; set; } = "";
+        }
         [HttpPost]
         [Route("createNew")]
-        public async Task<IActionResult> createNew([FromBody] Request_Department_DTO dto)
+        public async Task<IActionResult> createNew([FromBody] Request_New_Department dto)
         {
             int tmp = await Program.api_department.createNew(dto.name, dto.code);
             if(tmp==200)
@@ -37,7 +39,7 @@ namespace se100_cs.Controllers
         }
         [HttpPut]
         [Route("updateOne")]
-        public async Task<IActionResult> updateOne([FromBody] Request_Department_DTO dto, long id)
+        public async Task<IActionResult> updateOne([FromBody] Request_New_Department dto, long id)
         {
             bool tmp = await Program.api_department.updateOne(id, dto.name, dto.code);
             if( tmp)

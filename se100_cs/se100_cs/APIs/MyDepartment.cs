@@ -59,14 +59,9 @@ namespace se100_cs.APIs
                 {
                     return 409;
                 }
-                SqlPosition position = new SqlPosition();
                 SqlDepartment department= new SqlDepartment();
                 department.name = name;
                 department.code = code;
-                position.department = department;
-                position.title = "Head";
-                position.code = "HEAD" ;
-                context.positions.Add(position);
                 context.departments.Add(department);
                 await context.SaveChangesAsync();
                 return 200;
