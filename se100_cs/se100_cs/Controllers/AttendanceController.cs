@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using se100_cs.APIs;
+using static se100_cs.APIs.MyEmployee;
 
 namespace se100_cs.Controllers
 {
@@ -16,16 +17,16 @@ namespace se100_cs.Controllers
 
         [HttpPost]
         [Route("checkin")]
-        public async Task<IActionResult> markAttendance(string token)
+        public async Task<IActionResult> markAttendance([FromBody] _Token token)
         {
-            long id = Program.api_employee.checkEmployee(token);
+            long id = Program.api_employee.checkEmployee(token.token);
             return Ok(await Program.api_attendance.markAttendance(id));
         }
-        [HttpGet]
+        [HttpPost]
         [Route("check")]
-        public async Task<IActionResult> check(string token)
+        public async Task<IActionResult> check([FromBody] _Token token)
         {
-            return Ok( await Program.api_attendance.check(token));
+            return Ok(await Program.api_attendance.check(token.token));
         }
     }
 }

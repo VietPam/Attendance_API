@@ -21,6 +21,38 @@ namespace se100_cs.Controllers
             public string cmnd { get; set; } = "";
             public string address { get; set; } = "";
         }
+        [HttpPost]
+        [Route("createNew")]
+        public async Task<IActionResult> createNew(Request_Employee_DTO _DTO, string department_code)
+        {
+            bool tmp = await Program.api_employee.createNew(_DTO.email, _DTO.fullName, _DTO.phoneNumber, _DTO.birth_day, _DTO.gender, _DTO.cmnd, _DTO.address, _DTO.avatar, department_code);
+            if(tmp)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        public class Non_Position_Emp
+        {
+            public long user_ID { get; set; }
+            public string fullName { get; set; } = "";
+            public string avatar { get; set; } = "";
+            public bool gender { get; set; } = true;
+            public string department_code { get; set; } = "";
+        }
+        
+
+        
+        [HttpGet]
+        [Route("list-non-position")]
+        public IActionResult list_non_position()
+        {
+            return Ok (Program.api_employee.list_non_position());
+            
+        }
         [HttpGet]
         [Route("getByDepartmentCode")]
         public IActionResult getByDepartmentCode(string departmentCode)
@@ -32,21 +64,31 @@ namespace se100_cs.Controllers
             public string email { get; set; }
             public string password { get; set; }
         }
+        [HttpPut]
+        [Route("link-to-position")]
+        public async Task<IActionResult> link_to_position(long userId, long position_id)
+        {
+            bool tmp = await Program.api_employee.link_to_position(userId, position_id);
+            if (tmp)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
         [HttpPost]
         [Route("login")]
         public IActionResult login([FromBody] login_dto_request dto)
         {
-            string token = Program.api_employee.login(dto.email, dto.password);
-            if (string.IsNullOrEmpty(token))
-            {
-                return BadRequest();
-            }
-            else
-            {
-                return Ok(token);
-            }
+                return Ok(Program.api_employee.login(dto.email, dto.password));
         }
-
+        //[HttpPost]
+        //[Route("reset-password")]
+        //public IActionResult send_mail_reset_password() {
+            
+        //}
         [HttpPut]
         [Route("updateOne")]
         public async Task<IActionResult> updateOne([FromBody] Request_Employee_DTO dto, long id)

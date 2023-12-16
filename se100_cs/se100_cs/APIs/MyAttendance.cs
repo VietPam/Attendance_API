@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using se100_cs.Model;
 using Serilog;
 using System.Linq;
@@ -61,7 +62,7 @@ namespace se100_cs.APIs
             if (i == 1) return "Late";
             return "Absent";
         }
-        public async Task<bool> init_attendance_today_async()
+        public async Task init_attendance_today_async()
         {
             DateTime now = DateTime.Now;
             using (DataContext context = new DataContext())
@@ -92,69 +93,94 @@ namespace se100_cs.APIs
                     await context.SaveChangesAsync();
                 }
             }
-            return true;
         }
         public async Task<string> markAttendance(long employee_id)
         {
+            Status_Response response = new Status_Response();
             DateTime now = DateTime.Now;
-
             using (DataContext context = new DataContext())
             {
                 SqlSetting? setting = context.settings!.FirstOrDefault();
                 int start_time_hour = setting.start_time_hour;
                 int start_time_minute = setting.start_time_minute;
 
-                SqlEmployee? employee = context.employees!.Where(s => s.ID == employee_id).FirstOrDefault();
+                SqlEmployee? employee = context.employees!.Where(s => s.ID == employee_id).Include(s=>s.department).FirstOrDefault();
                 if (employee == null)
                 {
                     return "employee null";
                 }
-
-
+                response.fullName = employee.fullName;
+                response.department = employee.department.name;
                 await init_attendance_today_async();
 
 
                 SqlAttendance? attendance = context.attendances!.Where(s => s.year == now.Year && s.month == now.Month && s.day == now.Day).Include(s => s.list_attendance).FirstOrDefault();
 
                 SqlATDDetail? existing = attendance.list_attendance.Where(s => s.employee == employee).FirstOrDefault();
+                if (existing == null) {
+                    return JsonConvert.SerializeObject(response);
+                }
                 if (existing.time.CompareTo(new TimeOnly(23, 59)) == 0)
                 {
                     if (now.Hour * 60 + now.Minute > start_time_hour * 60 + start_time_minute)
-                    {
+                    {//late
                         existing.status = 1;
                         existing.time = TimeOnly.FromDateTime(now);
+                        response.time = existing.time;
+                        response.status = attendance_status(existing.status);
                         // gọi signalr
                     }
                     else
-                    {
+                    {//ontime
                         existing.status = 0;
                         existing.time = TimeOnly.FromDateTime(now);
+                        response.time = existing.time;
+                        response.status = attendance_status(existing.status);
                         // gọi signalr
                     }
                 }
+                else
+                {
+                    response.status = attendance_status(existing.status);
+                    response.time = existing.time;
+                }
                 await context.SaveChangesAsync();
-                return attendance_status(existing.status);
+                return JsonConvert.SerializeObject(response);
             }
+        }
+
+        public class Status_Response
+        {
+            public string status;//late, on time, absent
+            public string fullName;
+            public TimeOnly time;
+            public string department;
+            //public 
         }
         public async Task<string> check(string token)
         {
+            Status_Response response = new Status_Response();
             DateTime now = DateTime.Now;
             using (DataContext context = new DataContext())
             {
                 SqlEmployee? employee = context.employees!.Where(s => s.token==token).FirstOrDefault();
                 if (employee == null)
                 {
-                    return "employee null";
+                    return JsonConvert.SerializeObject(response);
                 }
+                response.fullName = employee.fullName;
                 await init_attendance_today_async();
                 SqlAttendance? attendance = context.attendances!.Where(s => s.year == now.Year && s.month == now.Month && s.day == now.Day).Include(s => s.list_attendance).FirstOrDefault();
                 SqlATDDetail? existing = attendance.list_attendance.Where(s => s.employee == employee).FirstOrDefault();
                 if (existing == null)
                 {
-                    return "Absent";
+                    response.status = attendance_status(2);
+                    return JsonConvert.SerializeObject(response);
                 }
-                return attendance_status(existing.status);
+                response.status=attendance_status(existing.status);
+                response.time = existing.time ;
             }
+            return JsonConvert.SerializeObject(response);
         }
         public class Employees_Today
         {

@@ -64,7 +64,7 @@ namespace se100_cs
                 app.UseCors("localhost");
                 app.UseRouting();
                 app.UseAuthorization(); 
-                //app.MapGet("/", () => string.Format("Server E-Management of SE100- {0}", DateTime.Now));
+                app.MapGet("/", () => string.Format("Server E-Management of SE100- {0}", DateTime.Now));
 
 
                 app.MapControllers();

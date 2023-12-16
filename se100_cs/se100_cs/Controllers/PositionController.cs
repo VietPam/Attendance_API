@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using se100_cs.APIs;
+using static se100_cs.Controllers.EmployeeController;
 
 namespace se100_cs.Controllers
 {
@@ -21,17 +22,33 @@ namespace se100_cs.Controllers
         //     return Ok(Program.api_position.getByDepartmentCode(departmentCode));
         //}
 
-        //[HttpPost]
-        //[Route("createNew")]
-        //public async Task<IActionResult> createNew([FromBody] Request_Position_DTO dto, string departmentCode)
-        //{
-        //    bool tmp = await Program.api_position.createNew(dto.title, dto.code,dto.salary_coeffcient,departmentCode);
-        //    if (tmp)
-        //    {
-        //        return Ok();
-        //    }
-        //    else return BadRequest();
-        //}
+        [HttpPost]
+        [Route("createNew")]
+        public async Task<IActionResult> createNew([FromBody] Request_Position_DTO dto, string departmentCode)
+        {
+            bool tmp = await Program.api_position.createNew(dto.title, dto.code, dto.salary_coeffcient, departmentCode);
+            if (tmp)
+            {
+                return Ok();
+            }
+            else return BadRequest();
+        }
+        [HttpPut]
+        [Route("remove-position")]
+        public async Task<IActionResult> remove_position(long userId)
+        {
+            bool tmp = await Program.api_position.remove_position(userId);
+            if (tmp)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        
         //[HttpPut]
         //[Route("updateOne")]
         //public async Task<IActionResult> updateOne([FromBody] Request_Position_DTO dto, long id)

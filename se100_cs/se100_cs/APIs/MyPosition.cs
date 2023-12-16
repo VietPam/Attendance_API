@@ -2,6 +2,7 @@
 using se100_cs.Model;
 using System.ComponentModel.DataAnnotations.Schema;
 using static se100_cs.APIs.MyDepartment;
+using static se100_cs.Controllers.EmployeeController;
 
 namespace se100_cs.APIs
 {
@@ -21,12 +22,12 @@ namespace se100_cs.APIs
         {
             using (DataContext context = new DataContext())
             {
-                SqlDepartment? department = context.departments!.Where(s=>s.code == departmentCode).FirstOrDefault();
-                if(department == null)
+                SqlDepartment? department = context.departments!.Where(s => s.code == departmentCode).FirstOrDefault();
+                if (department == null)
                 {
-                    return new List<Position_DTO_Response>()  ;
+                    return new List<Position_DTO_Response>();
                 }
-                List<SqlPosition>? list_positions = context.positions!.Include(s=>s.department).Where(s => s.isDeleted == false&& s.department!.code==departmentCode).ToList();
+                List<SqlPosition>? list_positions = context.positions!.Include(s => s.department).Where(s => s.isDeleted == false && s.department!.code == departmentCode).ToList();
                 List<Position_DTO_Response> repsonse = new List<Position_DTO_Response>();
                 if (list_positions.Count > 0)
                 {
@@ -47,7 +48,7 @@ namespace se100_cs.APIs
         {
             using (DataContext context = new DataContext())
             {
-                if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(code)||string.IsNullOrEmpty(departmentCode))
+                if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(code) || string.IsNullOrEmpty(departmentCode))
                 {
                     return false;
                 }
@@ -56,26 +57,45 @@ namespace se100_cs.APIs
                 {
                     return false;
                 }
-                
+
                 SqlPosition item = new SqlPosition();
                 item.title = title;
                 item.code = code;
-                item.salary_coeffcient=salary_coeffcient;
-                item.department=department;
+                item.salary_coeffcient = salary_coeffcient;
+                item.department = department;
                 context.positions!.Add(item);
                 await context.SaveChangesAsync();
                 return true;
             }
         }
-        public async Task<bool> updateOne(long position_id, string title, string code,long salarycoef)
+        public async Task<bool> remove_position(long user_Id)
         {
-            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(code) )
+            using (DataContext context = new DataContext())
+            {
+                SqlEmployee emp = context.employees.Where(s => s.isDeleted == false && s.ID == user_Id).Include(s => s.position).FirstOrDefault();
+                if (emp == null)
+                {
+                    return false;
+                }
+                if (emp.position == null)
+                {
+                    return false;
+                }
+                emp.position = null;
+                await context.SaveChangesAsync();
+                return true;
+            }
+        }
+        
+        public async Task<bool> updateOne(long position_id, string title, string code, long salarycoef)
+        {
+            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(code))
             {
                 return false;
             }
             using (DataContext context = new DataContext())
             {
-                SqlPosition? position = context.positions!.Where(s => s.ID == position_id&& s.isDeleted == false).FirstOrDefault();
+                SqlPosition? position = context.positions!.Where(s => s.ID == position_id && s.isDeleted == false).FirstOrDefault();
                 if (position == null)
                 {
                     return false;
