@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using se100_cs.Model;
 using Serilog;
+using System;
 using System.Linq;
 using System.Net.Mime;
 
@@ -104,7 +105,7 @@ namespace se100_cs.APIs
                 int start_time_hour = setting.start_time_hour;
                 int start_time_minute = setting.start_time_minute;
 
-                SqlEmployee? employee = context.employees!.Where(s => s.ID == employee_id).Include(s=>s.department).FirstOrDefault();
+                SqlEmployee? employee = context.employees!.Where(s => s.ID == employee_id).Include(s => s.department).FirstOrDefault();
                 if (employee == null)
                 {
                     return "employee null";
@@ -117,10 +118,11 @@ namespace se100_cs.APIs
                 SqlAttendance? attendance = context.attendances!.Where(s => s.year == now.Year && s.month == now.Month && s.day == now.Day).Include(s => s.list_attendance).FirstOrDefault();
 
                 SqlATDDetail? existing = attendance.list_attendance.Where(s => s.employee == employee).FirstOrDefault();
-                if (existing == null) {
+                if (existing == null)
+                {
                     return JsonConvert.SerializeObject(response);
                 }
-                if (existing.time.CompareTo(new TimeOnly(23, 59)) == 0)
+                if (existing.time.CompareTo(new TimeOnly(23, 59,0)) == 0)
                 {
                     if (now.Hour * 60 + now.Minute > start_time_hour * 60 + start_time_minute)
                     {//late
@@ -163,7 +165,7 @@ namespace se100_cs.APIs
             DateTime now = DateTime.Now;
             using (DataContext context = new DataContext())
             {
-                SqlEmployee? employee = context.employees!.Where(s => s.token==token).FirstOrDefault();
+                SqlEmployee? employee = context.employees!.Where(s => s.token == token).Include(s=>s.department).FirstOrDefault();
                 if (employee == null)
                 {
                     return JsonConvert.SerializeObject(response);
@@ -177,8 +179,9 @@ namespace se100_cs.APIs
                     response.status = attendance_status(2);
                     return JsonConvert.SerializeObject(response);
                 }
-                response.status=attendance_status(existing.status);
-                response.time = existing.time ;
+                response.status = attendance_status(existing.status);
+                response.time = existing.time;
+                response.department = employee.department.name;
             }
             return JsonConvert.SerializeObject(response);
         }
@@ -266,5 +269,36 @@ namespace se100_cs.APIs
         //    }
         //    return today;
         //}
+
+        public async Task<string> update_attendance_admin(int status)
+        {
+            int day = DateTime.UtcNow.Day, month = DateTime.UtcNow.Month, year = DateTime.UtcNow.Year;
+            using (DataContext context = new DataContext())
+            {// thắng
+                SqlATDDetail? admin_today = context.attendance_details.Include(s => s.attendance).Where(s => s.employee.ID == 999999999 && s.attendance.day == day).Include(s => s.employee).FirstOrDefault();
+                if (admin_today == null) { 
+                    await init_attendance_today_async();
+                    admin_today = context.attendance_details.Include(s => s.attendance).Where(s => s.employee.ID == 999999999 && s.attendance.day == day).Include(s => s.employee).FirstOrDefault();
+                }
+                int old_status = admin_today.status;
+                if(old_status != status)
+                {
+                    admin_today.status = status;
+                    if (admin_today.status == 0) { 
+                    admin_today.time = new TimeOnly(8, 15, 0);
+                    }
+                    else if (admin_today.status == 1)
+                    {
+                        admin_today.time = new TimeOnly(8, 35, 0);
+                    }
+                    else 
+                    {
+                        admin_today.time = new TimeOnly(23, 59, 0);
+                    }
+                    await context.SaveChangesAsync();
+                }
+                return attendance_status(admin_today.status);
+            }
+        }
     }
 }

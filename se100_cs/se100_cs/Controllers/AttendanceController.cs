@@ -28,5 +28,12 @@ namespace se100_cs.Controllers
         {
             return Ok(await Program.api_attendance.check(token.token));
         }
+
+        [HttpPut]
+        [Route("test/update_attendance_admin")]
+        public async Task<IActionResult> update_attendance_admin(int status)
+        {
+            return Ok(await Program.api_attendance.update_attendance_admin(status));
+        }
     }
 }
