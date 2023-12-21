@@ -45,8 +45,8 @@ namespace se100_cs.APIs
                 {
                     foreach (SqlDepartment department in list_departments)
                     {
-                        SqlPosition? position = department.position.Where(s=>s.code=="HEAD").FirstOrDefault();
-                        SqlEmployee head = position.employees[0];
+                        SqlPosition? position = department.position.Where(s => s.code == "HEAD").FirstOrDefault();
+                        SqlEmployee? head = context.employees.Where(s=>s.position==position).FirstOrDefault();
                         Department_DTO_Response item = new Department_DTO_Response();
                         item.department_ID = department.ID;
                         item.name = department.name;
