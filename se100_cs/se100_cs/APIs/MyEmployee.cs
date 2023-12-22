@@ -125,16 +125,16 @@ namespace se100_cs.APIs
             }
         }
 
-        public async Task<bool> createNew(string email, string fullName, string phoneNumber, DateTime birth_day, bool gender, string cmnd, string address, string avatar, string departmentCode)
+        public async Task<bool> createNew(string email, string fullName, string phoneNumber, DateTime birth_day, bool gender, string cmnd, string address, string avatar, long position_id)
         {
             using (DataContext context = new DataContext())
             {
-                if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(departmentCode) || string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(phoneNumber) || string.IsNullOrEmpty(address) || string.IsNullOrEmpty(avatar) || string.IsNullOrEmpty(cmnd))
+                if (string.IsNullOrEmpty(email) ||string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(phoneNumber) || string.IsNullOrEmpty(address) || string.IsNullOrEmpty(avatar) || string.IsNullOrEmpty(cmnd))
                 {
                     return false;
                 }
-                SqlDepartment? department = context.departments!.Where(s => s.code == departmentCode).FirstOrDefault();
-                if (department == null)
+                SqlPosition? position = context.positions!.Where(s => s.ID == position_id).Include(s=>s.department).FirstOrDefault();
+                if (position == null)
                 {
                     return false;
                 }
@@ -155,7 +155,8 @@ namespace se100_cs.APIs
                 item.token = DataContext.randomString(8);
                 item.avatar = avatar;
                 item.address = address;
-                item.department = department;
+                item.department = position.department;
+                item.position = position;
                 context.employees!.Add(item);
                 await context.SaveChangesAsync();
                 return true;

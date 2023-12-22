@@ -24,9 +24,9 @@ namespace se100_cs.Controllers
         }
         [HttpPost]
         [Route("createNew")]
-        public async Task<IActionResult> createNew(Request_Employee_DTO _DTO, string department_code)
+        public async Task<IActionResult> createNew(Request_Employee_DTO _DTO, long position_id)
         {
-            bool tmp = await Program.api_employee.createNew(_DTO.email, _DTO.fullName, _DTO.phoneNumber, _DTO.birth_day, _DTO.gender, _DTO.cmnd, _DTO.address, _DTO.avatar, department_code);
+            bool tmp = await Program.api_employee.createNew(_DTO.email, _DTO.fullName, _DTO.phoneNumber, _DTO.birth_day, _DTO.gender, _DTO.cmnd, _DTO.address, _DTO.avatar, position_id);
             if(tmp)
             {
                 return Ok();
