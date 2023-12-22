@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using se100_cs.APIs;
 using static se100_cs.APIs.MyEmployee;
 
@@ -34,6 +35,15 @@ namespace se100_cs.Controllers
         public async Task<IActionResult> update_attendance_admin(int status)
         {
             return Ok(await Program.api_attendance.update_attendance_admin(status));
+        }
+
+
+        [HttpGet]
+        [Route("getAll")]
+        public IActionResult getAll(int limit_day)
+        {
+            string data = JsonConvert.SerializeObject(Program.api_attendance.getAll(limit_day));
+            return Ok(data);
         }
     }
 }

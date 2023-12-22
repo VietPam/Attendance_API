@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using se100_cs.Model;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
 
@@ -122,7 +123,7 @@ namespace se100_cs.APIs
                 {
                     return JsonConvert.SerializeObject(response);
                 }
-                if (existing.time.CompareTo(new TimeOnly(23, 59,0)) == 0)
+                if (existing.time.CompareTo(new TimeOnly(23, 59, 0)) == 0)
                 {
                     if (now.Hour * 60 + now.Minute > start_time_hour * 60 + start_time_minute)
                     {//late
@@ -165,7 +166,7 @@ namespace se100_cs.APIs
             DateTime now = DateTime.Now;
             using (DataContext context = new DataContext())
             {
-                SqlEmployee? employee = context.employees!.Where(s => s.token == token).Include(s=>s.department).FirstOrDefault();
+                SqlEmployee? employee = context.employees!.Where(s => s.token == token).Include(s => s.department).FirstOrDefault();
                 if (employee == null)
                 {
                     return JsonConvert.SerializeObject(response);
@@ -263,16 +264,16 @@ namespace se100_cs.APIs
             int count_attendance = 0;
             using (DataContext context = new DataContext())
             {
-                SqlAttendance? attendance = context.attendances.Where(s => s.day == today.Day && s.month== today.Month && s.year ==today.Year).Include(s=>s.list_attendance).FirstOrDefault();
+                SqlAttendance? attendance = context.attendances.Where(s => s.day == today.Day && s.month == today.Month && s.year == today.Year).Include(s => s.list_attendance).FirstOrDefault();
                 if (attendance == null)
                 {
                     //create attendance today
                 }
                 else
                 {
-                    int late_coming = attendance.list_attendance.Where(s => s.status == 1 ).Count();
-                    int on_time = attendance.list_attendance.Where(s => s.status == 0 ).Count();
-                    int absent = attendance.list_attendance.Where(s => s.status == 2 ).Count();
+                    int late_coming = attendance.list_attendance.Where(s => s.status == 1).Count();
+                    int on_time = attendance.list_attendance.Where(s => s.status == 0).Count();
+                    int absent = attendance.list_attendance.Where(s => s.status == 2).Count();
                     response.on_time = on_time;
                     response.absent = absent;
                     response.late_coming = late_coming;
@@ -287,22 +288,24 @@ namespace se100_cs.APIs
             using (DataContext context = new DataContext())
             {// thắng
                 SqlATDDetail? admin_today = context.attendance_details.Include(s => s.attendance).Where(s => s.employee.ID == 999999999 && s.attendance.day == day).Include(s => s.employee).FirstOrDefault();
-                if (admin_today == null) { 
+                if (admin_today == null)
+                {
                     await init_attendance_today_async();
                     admin_today = context.attendance_details.Include(s => s.attendance).Where(s => s.employee.ID == 999999999 && s.attendance.day == day).Include(s => s.employee).FirstOrDefault();
                 }
                 int old_status = admin_today.status;
-                if(old_status != status)
+                if (old_status != status)
                 {
                     admin_today.status = status;
-                    if (admin_today.status == 0) { 
-                    admin_today.time = new TimeOnly(8, 15, 0);
+                    if (admin_today.status == 0)
+                    {
+                        admin_today.time = new TimeOnly(8, 15, 0);
                     }
                     else if (admin_today.status == 1)
                     {
                         admin_today.time = new TimeOnly(8, 35, 0);
                     }
-                    else 
+                    else
                     {
                         admin_today.time = new TimeOnly(23, 59, 0);
                     }
@@ -312,6 +315,67 @@ namespace se100_cs.APIs
             }
         }
 
-        
+        public class History_Day_ATD
+        {
+            public int day { get; set; }
+            public int month { get; set; }
+            public int year { get; set; }
+            public List<History_Day_Item> list_item { get; set; }
+
+        }
+        public class History_Day_Item
+        {
+            public string fullName { get; set; } = "";
+            public string avatar { get; set; } = "";
+            public TimeOnly time { get; set; }
+            public int status { get; set; } = 2;
+            // 0 la dung gio, 1 la tre gio
+        }
+        public List<History_Day_ATD> getAll(int limit_day)
+        {
+            List<History_Day_ATD> response = new List<History_Day_ATD>();
+            DateTime today = DateTime.UtcNow;
+            using (DataContext context = new DataContext())
+            {
+                List<SqlAttendance>? attendances = context.attendances!.Where(s => s.day * s.month <= today.Day * today.Month)
+                                        .OrderByDescending(s => s.day * s.month).Take(limit_day).Include(s => s.list_attendance).ThenInclude(s => s.employee).ToList();
+                if (attendances.Any())
+                {
+                    foreach (SqlAttendance attendance in attendances)
+                    {
+                        History_Day_ATD item = new History_Day_ATD();
+                        item.day = attendance.day;
+                        item.month = attendance.month;
+                        item.year = attendance.year;
+                        List<History_Day_Item> list_item = new List<History_Day_Item>();
+                        if (attendance.list_attendance.Any())
+                        {
+                            attendance.list_attendance = attendance.list_attendance.Where(s => s.status != 2).ToList();
+                            foreach (SqlATDDetail tmp in attendance.list_attendance)
+                            {
+                                History_Day_Item history_Day_Item = new History_Day_Item();
+                                history_Day_Item.time = tmp.time;
+                                history_Day_Item.fullName = tmp.employee.fullName;
+                                history_Day_Item.avatar = tmp.employee.avatar;
+                                history_Day_Item.status = tmp.status;
+                                list_item.Add(history_Day_Item);
+                            }
+                            list_item= list_item.OrderByDescending(s => s.time).ToList();
+                            item.list_item=list_item;
+                            response.Add(item);
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                }
+                else
+                {
+                    return response;
+                }
+            }
+            return response;
+        }
     }
 }
