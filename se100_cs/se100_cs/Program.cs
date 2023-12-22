@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using se100_cs.APIs;
+using se100_cs.Hubs;
 using se100_cs.Model;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
@@ -14,6 +17,7 @@ namespace se100_cs
         public static MyDashboard api_dashboard = new MyDashboard();
         public static MyAttendance api_attendance=new MyAttendance();
         public static MySetting api_setting=new MySetting();
+        public static IHubContext<NotiHub>? notiHub; 
         public static async Task Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
@@ -42,6 +46,14 @@ namespace se100_cs
                             .AllowCredentials();
                     });
                 });
+
+                builder.Services.AddSignalR(options =>
+                {
+                    options.EnableDetailedErrors = true;
+                    options.KeepAliveInterval = TimeSpan.FromSeconds(5);
+                    options.MaximumReceiveMessageSize = 10 * 1024 * 1024;
+                    options.StreamBufferCapacity = 10 * 1024 * 1024;
+                }).AddMessagePackProtocol();
                 builder.Services.AddDbContext<DataContext>(options =>options.UseNpgsql(DataContext.configSql));
                 builder.Services.AddControllers();
                 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -66,6 +78,15 @@ namespace se100_cs
                 app.UseAuthorization(); 
                 app.MapGet("/", () => string.Format("Server E-Management of SE100- {0}", DateTime.Now));
 
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapHub<NotiHub>("/notiHub", options =>
+                    {
+                        options.Transports = HttpTransportType.WebSockets;
+                    });
+                });
+
+                notiHub = (IHubContext<NotiHub>?)app.Services.GetService(typeof(IHubContext<NotiHub>));
 
                 app.MapControllers();
 

@@ -24,6 +24,7 @@ namespace se100_cs.Model
         public SqlPosition? position { get; set; }
         public SqlDepartment? department { get; set; }
         public List<SqlATDDetail> atds { get; set; }
+        public string IdHub { get; set; }
     }
 
     public enum Role

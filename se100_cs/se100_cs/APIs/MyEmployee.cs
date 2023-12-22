@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using se100_cs.Model;
+using Serilog;
 using System.Collections.Generic;
 using System.Runtime.Intrinsics.Arm;
 using static se100_cs.APIs.MyDashboard;
@@ -419,6 +420,53 @@ namespace se100_cs.APIs
                 }
             }
             return response;
+        }
+
+        public async Task<bool> disconnectUserAsync(string id)
+        {
+            using (DataContext context = new DataContext())
+            {
+                try
+                {
+                    SqlEmployee? user = context.employees.Where(s => s.IdHub.CompareTo(id) == 0).FirstOrDefault();
+                    if (user == null)
+                    {
+                        return false;
+                    }
+
+                    user.IdHub = "";
+                    await context.SaveChangesAsync();
+                    return true;
+
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                    return false;
+                }
+            }
+        }
+        public async Task<bool> updateUserAsync(string idHub, long id)
+        {
+            using (DataContext context = new DataContext())
+            {
+                try
+                {
+                    SqlEmployee? user = context.employees.Where(s => s.ID.CompareTo(id) == 0).FirstOrDefault();
+                    if (user == null)
+                    {
+                        return false;
+                    }
+                    user.IdHub = idHub;
+                    await context.SaveChangesAsync();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                    return false;
+                }
+            }
         }
     }
 }

@@ -35,7 +35,7 @@ namespace se100_cs.APIs
             }
             using (DataContext context = new DataContext())
             {
-                SqlAttendance atd = context.attendances.Where(s => s.year == year && s.month == month && s.day == day).Include(s => s.list_attendance).ThenInclude(s => s.employee).ThenInclude(s => s.department).FirstOrDefault();
+                SqlAttendance? atd = context.attendances.Where(s => s.year == year && s.month == month && s.day == day).Include(s => s.list_attendance).ThenInclude(s => s.employee).ThenInclude(s => s.department).FirstOrDefault();
                 if (atd == null)
                 {
                     return response;
@@ -113,7 +113,7 @@ namespace se100_cs.APIs
                 }
                 response.fullName = employee.fullName;
                 response.department = employee.department.name;
-                await init_attendance_today_async(now.Day,now.Month,now.Year);
+                await init_attendance_today_async(now.Day, now.Month, now.Year);
 
 
                 SqlAttendance? attendance = context.attendances!.Where(s => s.year == now.Year && s.month == now.Month && s.day == now.Day).Include(s => s.list_attendance).FirstOrDefault();
@@ -172,7 +172,7 @@ namespace se100_cs.APIs
                     return JsonConvert.SerializeObject(response);
                 }
                 response.fullName = employee.fullName;
-                await init_attendance_today_async(now.Day, now.Month,now.Year);
+                await init_attendance_today_async(now.Day, now.Month, now.Year);
                 SqlAttendance? attendance = context.attendances!.Where(s => s.year == now.Year && s.month == now.Month && s.day == now.Day).Include(s => s.list_attendance).FirstOrDefault();
                 SqlATDDetail? existing = attendance.list_attendance.Where(s => s.employee == employee).FirstOrDefault();
                 if (existing == null)
@@ -226,7 +226,7 @@ namespace se100_cs.APIs
                     SqlAttendance? atd_today = context.attendances.Include(s => s.list_attendance).Where(s => s.day == ngay_hom_nay - (hom_nay_la_thu - i) && s.month == thang && s.year == DateTime.Now.Year).FirstOrDefault();
                     if (atd_today == null || !atd_today.list_attendance.Any())
                     {
-                        await init_attendance_today_async(ngay_hom_nay - (hom_nay_la_thu - i), thang,DateTime.Now.Year);
+                        await init_attendance_today_async(ngay_hom_nay - (hom_nay_la_thu - i), thang, DateTime.Now.Year);
                     }
                     atd_today = context.attendances.Include(s => s.list_attendance).Where(s => s.day == ngay_hom_nay - (hom_nay_la_thu - i) && s.month == thang && s.year == DateTime.Now.Year).FirstOrDefault();
                     int on_time = atd_today.list_attendance.Where(s => s.status == 0).Count();
@@ -281,7 +281,7 @@ namespace se100_cs.APIs
                     int late_coming = attendance.list_attendance.Where(s => s.status == 1).Count();
                     int on_time = attendance.list_attendance.Where(s => s.status == 0).Count();
                     int absent = attendance.list_attendance.Where(s => s.status == 2).Count();
-                    response.ngay = DateTime.Now.Day; 
+                    response.ngay = DateTime.Now.Day;
                     response.thu = (int)DateTime.Now.DayOfWeek + 1;
                     response.on_time = on_time;
                     response.absent = absent;
@@ -299,7 +299,7 @@ namespace se100_cs.APIs
                 SqlATDDetail? admin_today = context.attendance_details.Include(s => s.attendance).Where(s => s.employee.ID == 999999999 && s.attendance.day == day).Include(s => s.employee).FirstOrDefault();
                 if (admin_today == null)
                 {
-                    await init_attendance_today_async(day,month,year);
+                    await init_attendance_today_async(day, month, year);
                     admin_today = context.attendance_details.Include(s => s.attendance).Where(s => s.employee.ID == 999999999 && s.attendance.day == day).Include(s => s.employee).FirstOrDefault();
                 }
                 int old_status = admin_today.status;
@@ -369,8 +369,8 @@ namespace se100_cs.APIs
                                 history_Day_Item.status = tmp.status;
                                 list_item.Add(history_Day_Item);
                             }
-                            list_item= list_item.OrderByDescending(s => s.time).ToList();
-                            item.list_item=list_item;
+                            list_item = list_item.OrderByDescending(s => s.time).ToList();
+                            item.list_item = list_item;
                             response.Add(item);
                         }
                         else
@@ -385,6 +385,32 @@ namespace se100_cs.APIs
                 }
             }
             return response;
+        }
+
+        public bool getListNotiSignalR(string idHub)
+        {
+            DateTime now = DateTime.UtcNow;
+            using (DataContext context = new DataContext())
+            {
+                SqlEmployee? user = context.employees.Where(s => s.IdHub.CompareTo(idHub) == 0).FirstOrDefault();
+                if (user == null)
+                {
+                    return false;
+                }
+                List<Attendance_DTO_Response>? list = Program.api_attendance.getListByDate(now.Day, now.Month, now.Year).Take(5).ToList();
+                try
+                {
+                    string data = JsonConvert.SerializeObject(list);
+                    Program.notiHub?.Clients.Client(user.IdHub).SendCoreAsync("GetListNoti", new object[] { data });
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                    return false;
+                }
+            }
+            
+            return false;
         }
     }
 }
