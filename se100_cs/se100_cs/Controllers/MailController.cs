@@ -11,6 +11,7 @@ namespace se100_cs.Controllers
     public class MailController : ControllerBase
     {
         [HttpPost]
+        [Route("reset_password")]
         public async Task<IActionResult> reset_password(long emp_id)
         {
             string new_pasword= await Program.api_employee.reset_password(emp_id);

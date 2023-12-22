@@ -189,53 +189,55 @@ namespace se100_cs.APIs
         {
             public int thu { get; set; }
             public int ngay { get; set; }
-            public int attendance { get; set; } = 0;
+            public int on_time { get; set; } = 0;
             public int late_coming { get; set; } = 0;
             public int absent { get; set; } = 0;
 
         }
 
-        //public List<Employees_Today> getEmployees_ByWeek()
-        //{
-        //    int ngay_hom_nay = DateTime.Now.Day;
-        //    int thang_truoc = DateTime.Now.Month - 1;
-        //    List<Employees_Today> week = new List<Employees_Today>();
-        //    int hom_nay_la_thu = (int)DateTime.Now.DayOfWeek + 1; // vi du thu 5, thứ 2 là bằng 2
-        //    if (hom_nay_la_thu == 1) { hom_nay_la_thu = 8; }
-        //    for (int i = hom_nay_la_thu; i >= 2; i--)
-        //    {
-        //        Employees_Today today = new Employees_Today();
-        //        using (DataContext context = new DataContext())
-        //        {
+        public List<Employees_Today> getEmployees_ByWeek()
+        {
+            int ngay_hom_nay = DateTime.Now.Day;
+            int thang_truoc = DateTime.Now.Month - 1;
+            List<Employees_Today> response = new List<Employees_Today>();
+            //int hom_nay_la_thu = (int)DateTime.Now.DayOfWeek + 1; // vi du thu 5, thứ 2 là bằng 2
+            //if (hom_nay_la_thu == 1) { hom_nay_la_thu = 8; }
+            //for (int i = hom_nay_la_thu; i >= 2; i--)
+            //{
+            //    Employees_Today today = new Employees_Today();
+            //    using (DataContext context = new DataContext())
+            //    {
 
 
-        //            if (ngay_hom_nay - (hom_nay_la_thu - i) < 1)
-        //            {
-        //                if (thang_truoc % 2 == 1)
-        //                {
-        //                    ngay_hom_nay = 30;
-        //                }
-        //                else
-        //                {
-        //                    ngay_hom_nay = 31;
-        //                }
-        //                hom_nay_la_thu = i;
-        //            }
-        //            int attendance = context.attendances!.Where(s => s.status == 0 && s.time.Day == ngay_hom_nay - (hom_nay_la_thu - i)).Count();
-        //            int late_coming = context.attendances!.Where(s => s.status == 1 && s.time.Day == ngay_hom_nay - (hom_nay_la_thu - i)).Count();
-        //            int total = Program.api_employee.countTotalEmployee();
-        //            int absent = total - attendance - late_coming;
-        //            today.thu = i;
-        //            today.ngay = ngay_hom_nay - (hom_nay_la_thu - i);
-        //            today.attendance = attendance;
-        //            today.absent = absent;
-        //            today.late_coming = late_coming;
-        //            week.Add(today);
-        //        }
-        //    }
-        //    week = week.OrderBy(s => s.thu).ToList();
-        //    return week;
-        //}
+            //        if (ngay_hom_nay - (hom_nay_la_thu - i) < 1)
+            //        {
+            //            if (thang_truoc % 2 == 1)
+            //            {
+            //                ngay_hom_nay = 30;
+            //            }
+            //            else
+            //            {
+            //                ngay_hom_nay = 31;
+            //            }
+            //            hom_nay_la_thu = i;
+            //        }
+            //        int attendance = context.attendances!.Where(s => s.status == 0 && s.time.Day == ngay_hom_nay - (hom_nay_la_thu - i)).Count();
+            //        int late_coming = context.attendances!.Where(s => s.status == 1 && s.time.Day == ngay_hom_nay - (hom_nay_la_thu - i)).Count();
+            //        int total = Program.api_employee.countTotalEmployee();
+            //        int absent = total - attendance - late_coming;
+            //        today.thu = i;
+            //        today.ngay = ngay_hom_nay - (hom_nay_la_thu - i);
+            //        today.attendance = attendance;
+            //        today.absent = absent;
+            //        today.late_coming = late_coming;
+            //        response.Add(today);
+            //    }
+            //}
+            response = response.OrderBy(s => s.thu).ToList();
+            return response;
+        }
+
+
         //public Employees_Today getEmployees_Byday(int day)
         //{
         //    Employees_Today today = new Employees_Today();
@@ -252,23 +254,32 @@ namespace se100_cs.APIs
         //    }
         //    return today;
         //}
-        //public Employees_Today getEmployees_Today()
-        //{
-        //    int day = DateTime.Now.Day;
-        //    Employees_Today today = new Employees_Today();
-        //    int count_attendance = 0;
-        //    using (DataContext context = new DataContext())
-        //    {
-        //        int attendance = context.attendances.Where(s => s.status == 0 && s.time.Day == day).Count();
-        //        int late_coming = context.attendances!.Where(s => s.status == 1 && s.time.Day == day).Count();
-        //        int total = Program.api_employee.countTotalEmployee();
-        //        int absent = total - attendance - late_coming;
-        //        today.attendance = attendance;
-        //        today.absent = absent;
-        //        today.late_coming = late_coming;
-        //    }
-        //    return today;
-        //}
+
+
+        public Employees_Today getEmployees_Today()
+        {
+            DateTime today = DateTime.Now;
+            Employees_Today response = new Employees_Today();
+            int count_attendance = 0;
+            using (DataContext context = new DataContext())
+            {
+                SqlAttendance? attendance = context.attendances.Where(s => s.day == today.Day && s.month== today.Month && s.year ==today.Year).Include(s=>s.list_attendance).FirstOrDefault();
+                if (attendance == null)
+                {
+                    //create attendance today
+                }
+                else
+                {
+                    int late_coming = attendance.list_attendance.Where(s => s.status == 1 ).Count();
+                    int on_time = attendance.list_attendance.Where(s => s.status == 0 ).Count();
+                    int absent = attendance.list_attendance.Where(s => s.status == 2 ).Count();
+                    response.on_time = on_time;
+                    response.absent = absent;
+                    response.late_coming = late_coming;
+                }
+            }
+            return response;
+        }
 
         public async Task<string> update_attendance_admin(int status)
         {
@@ -300,5 +311,7 @@ namespace se100_cs.APIs
                 return attendance_status(admin_today.status);
             }
         }
+
+        
     }
 }
