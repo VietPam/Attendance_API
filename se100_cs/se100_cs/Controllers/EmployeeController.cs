@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using se100_cs.APIs;
 using se100_cs.Model;
 using System.Runtime.CompilerServices;
@@ -58,7 +59,8 @@ namespace se100_cs.Controllers
         [Route("getByDepartmentCode")]
         public IActionResult getByDepartmentCode(string departmentCode,int page=1, int per_page=10)
         {
-            return Ok(Program.api_employee.getByDepartmentCode(departmentCode,page,per_page));
+            string data = JsonConvert.SerializeObject( Program.api_employee.getByDepartmentCode(departmentCode, page, per_page));
+            return Ok(data);
         }
 
         [HttpGet]

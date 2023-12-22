@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using se100_cs.Model;
 using System.Collections.Generic;
+using System.Runtime.Intrinsics.Arm;
 using static se100_cs.APIs.MyDashboard;
 using static se100_cs.APIs.MyPosition;
 using static se100_cs.Controllers.EmployeeController;
@@ -22,17 +23,33 @@ namespace se100_cs.APIs
             public string cmnd { get; set; } = "";
             public string address { get; set; } = "";
         }
-        public List<Employee_DTO_Response> getByDepartmentCode(string departmentCode, int page, int per_page)
+        public class DTO_employee
         {
-            List<Employee_DTO_Response> repsonse = new List<Employee_DTO_Response>();
+            public List<Employee_DTO_Response> list_emp { get; set; } = new List<Employee_DTO_Response>();
+            public int current_page { get; set; }
+            public int perpage { get; set; }
+            public int pages { get; set; }
+        }
+        public DTO_employee getByDepartmentCode(string departmentCode, int page, int per_page)
+        {
+            DTO_employee response = new DTO_employee();
+            response.current_page = page;
+            response.perpage = per_page;
+
+            List<Employee_DTO_Response> list_emp = new List<Employee_DTO_Response>();
             using (DataContext context = new DataContext())
             {
-                SqlDepartment? department = context.departments!.Where(s => s.code == departmentCode && s.isDeleted == false).Include(s => s.employees).Skip((page - 1) * per_page).Take(per_page).FirstOrDefault();
-                if (department == null)
+                SqlDepartment? dep = context.departments.Where(s => s.code == departmentCode && s.isDeleted == false).Include(s=>s.employees).FirstOrDefault();
+                if (dep == null)
                 {
-                    return repsonse;
+                    return response;
                 }
-                List<SqlEmployee>? list = department.employees;
+
+                int count_pages = dep.employees.Where(s => s.isDeleted == false).Count();
+                response.pages = (int)count_pages / per_page + 1;
+                
+                List<SqlEmployee>? list = dep.employees.Skip((page - 1) * per_page).Take(per_page).ToList();
+
                 if (list.Count > 0)
                 {
                     foreach (SqlEmployee employee in list)
@@ -46,24 +63,34 @@ namespace se100_cs.APIs
                         item.gender = employee.gender;
                         item.cmnd = employee.cmnd;
                         item.address = employee.address;
-                        repsonse.Add(item);
+                        list_emp.Add(item);
                     }
+                    response.list_emp = list_emp;
                 }
-                return repsonse;
+                return response;
             }
         }
 
-        public List<Employee_DTO_Response> getByPositionID(long position_id, int page, int per_page)
+        public DTO_employee getByPositionID(long position_id, int page, int per_page)
         {
-            List<Employee_DTO_Response> response = new List<Employee_DTO_Response>();
+            DTO_employee response = new DTO_employee();
+            response.current_page = page;
+            response.perpage = per_page;
+
+            List<Employee_DTO_Response> list_emp = new List<Employee_DTO_Response>();
             using (DataContext context = new DataContext())
             {
-                SqlPosition? position = context.positions!.Where(s => s.ID == position_id && s.isDeleted == false).Include(s => s.employees).Skip((page - 1) * per_page).Take(per_page).FirstOrDefault();
+                SqlPosition? position = context.positions!.Where(s => s.ID == position_id && s.isDeleted == false).Include(s => s.employees).FirstOrDefault();
                 if (position == null)
                 {
                     return response;
                 }
-                List<SqlEmployee>? list = position.employees.Where(s => s.isDeleted == false).ToList();
+
+                int count_pages = position.employees.Where(s => s.isDeleted == false).Count();
+                response.pages = (int)count_pages / per_page + 1;
+
+                
+                List<SqlEmployee>? list = position.employees.Where(s => s.isDeleted == false).Skip((page - 1) * per_page).Take(per_page).ToList();
                 if (list.Any())
                 {
                     foreach (SqlEmployee employee in list)
@@ -77,8 +104,9 @@ namespace se100_cs.APIs
                         item.gender = employee.gender;
                         item.cmnd = employee.cmnd;
                         item.address = employee.address;
-                        response.Add(item);
+                        list_emp.Add(item);
                     }
+                    response.list_emp = list_emp;
                 }
                 return response;
             }

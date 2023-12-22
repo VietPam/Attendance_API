@@ -50,7 +50,7 @@ namespace se100_cs.APIs
 
             using (DataContext context = new DataContext())
             {
-                int count_pages= context.departments.Where(s => s.isDeleted == false).Count();
+                int count_pages= context.departments.Include(s => s.employees).Where(s => s.isDeleted == false).Count();
                 response.pages = (int)count_pages / per_page +1;
 
 
