@@ -8,19 +8,19 @@ namespace se100_cs.Controllers
     {
         [HttpGet]
         [Route("getAll")]
-        public IActionResult getAll()
+        public IActionResult getAll(int page=1, int per_page=10)
         {
-            return Ok(Program.api_department.getAll());
+            return Ok(Program.api_department.getAll(page,per_page));
         }
 
-        public class Request_Department_DTO
-        {
-            public string name { get; set; } = "";
-            public string code { get; set; } = "";
-            public string idBoss { get; set; } = "";
-            public string nameBoss { get; set; } = "";
-            public int numberEmployee { get; set; } = 0;
-        }
+        //public class Request_Department_DTO
+        //{
+        //    public string name { get; set; } = "";
+        //    public string code { get; set; } = "";
+        //    public string idBoss { get; set; } = "";
+        //    public string nameBoss { get; set; } = "";
+        //    public int numberEmployee { get; set; } = 0;
+        //}
         public class Request_New_Department{
             public string name { get; set; } = "";
             public string code { get; set; } = "";

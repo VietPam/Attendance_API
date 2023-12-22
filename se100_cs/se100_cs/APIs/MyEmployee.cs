@@ -21,17 +21,17 @@ namespace se100_cs.APIs
             public string cmnd { get; set; } = "";
             public string address { get; set; } = "";
         }
-        public List<Employee_DTO_Response> getByDepartmentCode(string departmentCode)
+        public List<Employee_DTO_Response> getByDepartmentCode(string departmentCode, int page, int per_page)
         {
+            List<Employee_DTO_Response> repsonse = new List<Employee_DTO_Response>();
             using (DataContext context = new DataContext())
             {
-                SqlDepartment? department = context.departments!.Where(s => s.code == departmentCode && s.isDeleted == false).Include(s => s.employees).FirstOrDefault();
+                SqlDepartment? department = context.departments!.Where(s => s.code == departmentCode && s.isDeleted == false).Include(s => s.employees).Skip((page-1)*per_page).Take(per_page).FirstOrDefault();
                 if (department == null)
                 {
-                    return new List<Employee_DTO_Response>();
+                    return repsonse;
                 }
                 List<SqlEmployee>? list = department.employees;
-                List<Employee_DTO_Response> repsonse = new List<Employee_DTO_Response>();
                 if (list.Count > 0)
                 {
                     foreach (SqlEmployee employee in list)
@@ -51,7 +51,37 @@ namespace se100_cs.APIs
                 return repsonse;
             }
         }
-
+        
+        public List<Employee_DTO_Response> getByPositionID(long position_id, int page, int per_page)
+        {
+            List<Employee_DTO_Response> response = new List<Employee_DTO_Response>();
+            using (DataContext context = new DataContext())
+            {
+                SqlPosition? position = context.positions!.Where(s => s.ID == position_id && s.isDeleted == false).Include(s => s.employees).Skip((page-1)*per_page).Take(per_page).FirstOrDefault();
+                if (position == null)
+                {
+                    return response;
+                }
+                List<SqlEmployee>? list = position.employees.Where(s=>s.isDeleted==false).ToList();
+                if (list.Any())
+                {
+                    foreach (SqlEmployee employee in list)
+                    {
+                        Employee_DTO_Response item = new Employee_DTO_Response();
+                        item.ID = employee.ID;
+                        item.email = employee.email;
+                        item.fullName = employee.fullName;
+                        item.phoneNumber = employee.phoneNumber;
+                        item.avatar = employee.avatar;
+                        item.gender = employee.gender;
+                        item.cmnd = employee.cmnd;
+                        item.address = employee.address;
+                        response.Add(item);
+                    }
+                }
+                return response;
+            }
+        }
         public string getRole(long employee_id)
         {
             using (DataContext context = new DataContext())

@@ -2,6 +2,7 @@
 using se100_cs.Model;
 using System.ComponentModel.DataAnnotations.Schema;
 using static se100_cs.APIs.MyDepartment;
+using static se100_cs.APIs.MyEmployee;
 using static se100_cs.Controllers.EmployeeController;
 
 namespace se100_cs.APIs
@@ -16,19 +17,19 @@ namespace se100_cs.APIs
             public string code { get; set; } = "";
             public long salary_coeffcient { get; set; } = 0;
 
-            //public long quantity { get; set; }= 0;
+            public int emp_count{ get; set; }= 0;
         }
-        public List<Position_DTO_Response> getByDepartmentCode(string departmentCode)
+        public List<Position_DTO_Response> getByDepartmentCode(string departmentCode, int page, int per_page)
         {
+            List<Position_DTO_Response> repsonse = new List<Position_DTO_Response>();
             using (DataContext context = new DataContext())
             {
-                SqlDepartment? department = context.departments!.Where(s => s.code == departmentCode).FirstOrDefault();
+                SqlDepartment? department = context.departments!.Where(s => s.code == departmentCode && s.isDeleted==false).Include(s=>s.position).ThenInclude(s=>s.employees).FirstOrDefault();
                 if (department == null)
                 {
                     return new List<Position_DTO_Response>();
                 }
-                List<SqlPosition>? list_positions = context.positions!.Include(s => s.department).Where(s => s.isDeleted == false && s.department!.code == departmentCode).ToList();
-                List<Position_DTO_Response> repsonse = new List<Position_DTO_Response>();
+                List<SqlPosition> list_positions = department.position.Where(s=>s.isDeleted==false).Skip((page-1)*per_page).Take(per_page).ToList();
                 if (list_positions.Count > 0)
                 {
                     foreach (SqlPosition position in list_positions)
@@ -38,6 +39,7 @@ namespace se100_cs.APIs
                         item.title = position.title;
                         item.code = position.code;
                         item.salary_coeffcient = position.salary_coeffcient;
+                        item.emp_count= position.employees.Any() ? position.employees.Count() : 0;
                         repsonse.Add(item);
                     }
                 }
@@ -127,5 +129,6 @@ namespace se100_cs.APIs
                 }
             }
         }
+
     }
 }

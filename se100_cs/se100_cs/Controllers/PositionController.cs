@@ -15,12 +15,12 @@ namespace se100_cs.Controllers
             public long salary_coeffcient { get; set; } = 0;
 
         }
-        //[HttpGet]
-        //[Route("getByDepartmentCode")]
-        //public IActionResult getByDepartmentCode(string departmentCode)
-        //{
-        //     return Ok(Program.api_position.getByDepartmentCode(departmentCode));
-        //}
+        [HttpGet]
+        [Route("getByDepartmentCode")]
+        public IActionResult getByDepartmentCode(string departmentCode, int page=1, int per_page=10)
+        {
+            return Ok(Program.api_position.getByDepartmentCode(departmentCode,page,per_page));
+        }
 
         [HttpPost]
         [Route("createNew")]
@@ -33,21 +33,21 @@ namespace se100_cs.Controllers
             }
             else return BadRequest();
         }
-        [HttpPut]
-        [Route("remove-position")]
-        public async Task<IActionResult> remove_position(long userId)
-        {
-            bool tmp = await Program.api_position.remove_position(userId);
-            if (tmp)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-
+        //[HttpPut]
+        //[Route("unlink-position")]
+        //public async Task<IActionResult> remove_position(long userId)
+        //{
+        //    bool tmp = await Program.api_position.remove_position(userId);
+        //    if (tmp)
+        //    {
+        //        return Ok();
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
+        
         
         //[HttpPut]
         //[Route("updateOne")]
