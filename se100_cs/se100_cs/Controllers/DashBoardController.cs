@@ -7,9 +7,9 @@ namespace se100_cs.Controllers
     {
         [HttpGet]
         [Route("")]
-        public IActionResult getRole()
+        public async Task<IActionResult> getStats()
         {
-            return Ok(Program.api_dashboard.getStats());
+            return Ok(await Program.api_dashboard.getStats());
         }
     }
 }

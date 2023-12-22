@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using se100_cs.Model;
 using System.Collections.Generic;
+using static se100_cs.APIs.MyDashboard;
 using static se100_cs.APIs.MyPosition;
 using static se100_cs.Controllers.EmployeeController;
 
@@ -26,7 +27,7 @@ namespace se100_cs.APIs
             List<Employee_DTO_Response> repsonse = new List<Employee_DTO_Response>();
             using (DataContext context = new DataContext())
             {
-                SqlDepartment? department = context.departments!.Where(s => s.code == departmentCode && s.isDeleted == false).Include(s => s.employees).Skip((page-1)*per_page).Take(per_page).FirstOrDefault();
+                SqlDepartment? department = context.departments!.Where(s => s.code == departmentCode && s.isDeleted == false).Include(s => s.employees).Skip((page - 1) * per_page).Take(per_page).FirstOrDefault();
                 if (department == null)
                 {
                     return repsonse;
@@ -51,18 +52,18 @@ namespace se100_cs.APIs
                 return repsonse;
             }
         }
-        
+
         public List<Employee_DTO_Response> getByPositionID(long position_id, int page, int per_page)
         {
             List<Employee_DTO_Response> response = new List<Employee_DTO_Response>();
             using (DataContext context = new DataContext())
             {
-                SqlPosition? position = context.positions!.Where(s => s.ID == position_id && s.isDeleted == false).Include(s => s.employees).Skip((page-1)*per_page).Take(per_page).FirstOrDefault();
+                SqlPosition? position = context.positions!.Where(s => s.ID == position_id && s.isDeleted == false).Include(s => s.employees).Skip((page - 1) * per_page).Take(per_page).FirstOrDefault();
                 if (position == null)
                 {
                     return response;
                 }
-                List<SqlEmployee>? list = position.employees.Where(s=>s.isDeleted==false).ToList();
+                List<SqlEmployee>? list = position.employees.Where(s => s.isDeleted == false).ToList();
                 if (list.Any())
                 {
                     foreach (SqlEmployee employee in list)
@@ -368,6 +369,28 @@ namespace se100_cs.APIs
                 }
                 return emp.email;
             }
+        }
+
+        public List<Emp_perDep> GetEmp_PerDeps(int limit_emp)
+        {
+            List<Emp_perDep> response = new List<Emp_perDep>();
+            using (DataContext context = new DataContext())
+            {
+                List<SqlDepartment>? list_dep = context.departments.Where(s=>s.employees.Count()>0).Take(limit_emp).Include(s => s.employees).ToList();
+                if (list_dep.Count() < limit_emp)
+                {
+                    list_dep = context.departments.Take(limit_emp).Include(s => s.employees).ToList();
+                }
+                foreach (SqlDepartment dep in list_dep)
+                {
+                    Emp_perDep item = new Emp_perDep();
+                    item.department_code = dep.code;
+                    item.department_name = dep.name;
+                    item.emp_count = dep.employees.Where(s => s.isDeleted == false).Count();
+                    response.Add(item);
+                }
+            }
+            return response;
         }
     }
 }
