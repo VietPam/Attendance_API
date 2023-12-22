@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace se100_cs.Controllers
 {
@@ -10,7 +11,8 @@ namespace se100_cs.Controllers
         [Route("getAll")]
         public IActionResult getAll(int page=1, int per_page=10)
         {
-            return Ok(Program.api_department.getAll(page,per_page));
+            string data = JsonConvert.SerializeObject(Program.api_department.getAll(page, per_page));
+            return Ok(data);
         }
 
         //public class Request_Department_DTO

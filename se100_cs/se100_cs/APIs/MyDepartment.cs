@@ -7,7 +7,13 @@ namespace se100_cs.APIs
     public class MyDepartment
     {
         public MyDepartment() { }
-
+        public class DTO_Department
+        {
+            public int current_page { get; set; }
+            public int perpage { get; set; }
+            public int pages { get; set; }
+            public List<Department_DTO_Response> list_dep = new List<Department_DTO_Response>();
+        }
         public class Department_DTO_Response
         {
             public long department_ID { get; set; }
@@ -34,13 +40,21 @@ namespace se100_cs.APIs
         //    public string email { get; set; } = "";
         //    public bool gender { get; set; } = true;
         //}
-        public List<Department_DTO_Response> getAll(int page, int per_page )
+
+        public DTO_Department getAll(int current_page, int per_page)
         {
-            List<Department_DTO_Response> repsonse = new List<Department_DTO_Response>();
+            DTO_Department response = new DTO_Department();
+            response.current_page = current_page;
+            response.perpage = per_page;
+            List<Department_DTO_Response> list_dep = new List<Department_DTO_Response>();
 
             using (DataContext context = new DataContext())
             {
-                List<SqlDepartment> list_departments = context.departments.Include(s => s.employees).Where(s => s.isDeleted == false).Include(s => s.position).ThenInclude(s => s.employees).Skip((page - 1) * per_page).Take(per_page).ToList();
+                int count_pages= context.departments.Where(s => s.isDeleted == false).Count();
+                response.pages = (int)count_pages / per_page +1;
+
+
+                List<SqlDepartment> list_departments = context.departments.Include(s => s.employees).Where(s => s.isDeleted == false).Include(s => s.position).ThenInclude(s => s.employees).Skip((current_page - 1) * per_page).Take(per_page).ToList();
                 if (list_departments.Count > 0)
                 {
                     foreach (SqlDepartment department in list_departments)
@@ -53,13 +67,14 @@ namespace se100_cs.APIs
                         item.name = department.name;
                         item.department_code = department.code;
                         item.nameBoss = head_position.employees.Any() ? head_position.employees[0].fullName : "Trống";
-                        
+
                         item.numberEmployee = department.employees.Count();
                         item.numberPosition = department.position.Count();
-                        repsonse.Add(item);
+                        list_dep.Add(item);
                     }
                 }
-                return repsonse;
+                response.list_dep= list_dep;
+                return response;
             }
         }
         public async Task<int> createNew(string name, string code)
