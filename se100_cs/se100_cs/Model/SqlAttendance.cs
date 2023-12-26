@@ -8,9 +8,8 @@ namespace se100_cs.Model
     {
         [Key]
         public long ID { get; set; }
-        public int day { get; set; }
-        public int month { get; set; }
-        public int year { get; set; }
-        public List<SqlATDDetail>? list_attendance { get; set; } = new List<SqlATDDetail>();
+        public DateTime time { get; set; } = DateTime.UtcNow;
+        public SqlEmployee employee { get; set; }
+        public SqlState state { get; set; }
     }
 }

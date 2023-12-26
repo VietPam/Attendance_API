@@ -17,6 +17,8 @@ namespace se100_cs
         public static MyDashboard api_dashboard = new MyDashboard();
         public static MyAttendance api_attendance=new MyAttendance();
         public static MySetting api_setting=new MySetting();
+        public static MyPayroll api_payroll = new MyPayroll();
+        public static MyState api_state = new MyState();
         public static IHubContext<NotiHub>? notiHub; 
         public static async Task Main(string[] args)
         {
@@ -89,7 +91,7 @@ namespace se100_cs
                 notiHub = (IHubContext<NotiHub>?)app.Services.GetService(typeof(IHubContext<NotiHub>));
 
                 app.MapControllers();
-
+                await api_state.initAsync();
                 app.Run();
             }
             catch (Exception e)
