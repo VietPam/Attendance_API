@@ -9,7 +9,7 @@ namespace se100_cs.Model
         [Key]
         public long ID { get; set; }
         public DateTime time { get; set; } = DateTime.UtcNow;
-        public SqlEmployee employee { get; set; }
-        public SqlState state { get; set; }
+        public SqlEmployee? employee { get; set; }
+        public SqlState? state { get; set; }
     }
 }

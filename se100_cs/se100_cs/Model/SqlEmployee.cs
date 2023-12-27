@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Org.BouncyCastle.Asn1.Mozilla;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
 
@@ -24,6 +25,7 @@ namespace se100_cs.Model
         public SqlPosition? position { get; set; }
         public SqlDepartment? department { get; set; }
         public string? IdHub { get; set; } = "";
+        public List<SqlAttendance>? attendances { get; set; }
     }
 
     public enum Role

@@ -12,8 +12,8 @@ using se100_cs.Model;
 namespace se100_cs.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231202064522_1.0.0")]
-    partial class _100
+    [Migration("20231227020935_1.0.1")]
+    partial class _101
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -35,8 +35,8 @@ namespace se100_cs.Migrations
                     b.Property<long>("employeeID")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("status")
-                        .HasColumnType("integer");
+                    b.Property<long>("stateID")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("time")
                         .HasColumnType("timestamp with time zone");
@@ -44,6 +44,8 @@ namespace se100_cs.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("employeeID");
+
+                    b.HasIndex("stateID");
 
                     b.ToTable("tb_attendance");
                 });
@@ -59,6 +61,9 @@ namespace se100_cs.Migrations
                     b.Property<string>("code")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("name")
                         .IsRequired()
@@ -76,6 +81,9 @@ namespace se100_cs.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
+
+                    b.Property<string>("IdHub")
+                        .HasColumnType("text");
 
                     b.Property<string>("address")
                         .IsRequired()
@@ -106,7 +114,7 @@ namespace se100_cs.Migrations
                     b.Property<bool>("gender")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("is_deleted")
+                    b.Property<bool>("isDeleted")
                         .HasColumnType("boolean");
 
                     b.Property<string>("password")
@@ -120,8 +128,8 @@ namespace se100_cs.Migrations
                     b.Property<long?>("positionID")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("roleID")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("role")
+                        .HasColumnType("integer");
 
                     b.Property<string>("token")
                         .IsRequired()
@@ -132,8 +140,6 @@ namespace se100_cs.Migrations
                     b.HasIndex("departmentID");
 
                     b.HasIndex("positionID");
-
-                    b.HasIndex("roleID");
 
                     b.ToTable("tb_employee");
                 });
@@ -146,10 +152,18 @@ namespace se100_cs.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
 
+                    b.Property<long?>("employeeID")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("receive_date")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<long>("salary")
                         .HasColumnType("bigint");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("employeeID");
 
                     b.ToTable("tb_payroll");
                 });
@@ -168,6 +182,9 @@ namespace se100_cs.Migrations
 
                     b.Property<long?>("departmentID")
                         .HasColumnType("bigint");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<long>("salary_coeffcient")
                         .HasColumnType("bigint");
@@ -195,7 +212,7 @@ namespace se100_cs.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("isdeleted")
+                    b.Property<bool>("isDeleted")
                         .HasColumnType("boolean");
 
                     b.Property<string>("name")
@@ -207,45 +224,123 @@ namespace se100_cs.Migrations
                     b.ToTable("tb_role");
                 });
 
+            modelBuilder.Entity("se100_cs.Model.SqlSetting", b =>
+                {
+                    b.Property<long>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
+
+                    b.Property<string>("company_code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("company_name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("payment_date")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("salary_per_coef")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("start_time_hour")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("start_time_minute")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("tb_setting");
+                });
+
+            modelBuilder.Entity("se100_cs.Model.SqlState", b =>
+                {
+                    b.Property<long>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
+
+                    b.Property<string>("code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("tb_state");
+                });
+
             modelBuilder.Entity("se100_cs.Model.SqlAttendance", b =>
                 {
                     b.HasOne("se100_cs.Model.SqlEmployee", "employee")
-                        .WithMany()
+                        .WithMany("attendances")
                         .HasForeignKey("employeeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("se100_cs.Model.SqlState", "state")
+                        .WithMany()
+                        .HasForeignKey("stateID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("employee");
+
+                    b.Navigation("state");
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlEmployee", b =>
                 {
                     b.HasOne("se100_cs.Model.SqlDepartment", "department")
-                        .WithMany()
+                        .WithMany("employees")
                         .HasForeignKey("departmentID");
 
                     b.HasOne("se100_cs.Model.SqlPosition", "position")
-                        .WithMany()
+                        .WithMany("employees")
                         .HasForeignKey("positionID");
-
-                    b.HasOne("se100_cs.Model.SqlRole", "role")
-                        .WithMany()
-                        .HasForeignKey("roleID");
 
                     b.Navigation("department");
 
                     b.Navigation("position");
+                });
 
-                    b.Navigation("role");
+            modelBuilder.Entity("se100_cs.Model.SqlPayroll", b =>
+                {
+                    b.HasOne("se100_cs.Model.SqlEmployee", "employee")
+                        .WithMany()
+                        .HasForeignKey("employeeID");
+
+                    b.Navigation("employee");
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlPosition", b =>
                 {
                     b.HasOne("se100_cs.Model.SqlDepartment", "department")
-                        .WithMany()
+                        .WithMany("position")
                         .HasForeignKey("departmentID");
 
                     b.Navigation("department");
+                });
+
+            modelBuilder.Entity("se100_cs.Model.SqlDepartment", b =>
+                {
+                    b.Navigation("employees");
+
+                    b.Navigation("position");
+                });
+
+            modelBuilder.Entity("se100_cs.Model.SqlEmployee", b =>
+                {
+                    b.Navigation("attendances");
+                });
+
+            modelBuilder.Entity("se100_cs.Model.SqlPosition", b =>
+                {
+                    b.Navigation("employees");
                 });
 #pragma warning restore 612, 618
         }

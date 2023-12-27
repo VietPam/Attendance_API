@@ -40,15 +40,15 @@ namespace se100_cs.Hubs
         public async Task ConnectUser()
         {
             string id = Context.ConnectionId;
-            bool tmp = Program.api_attendance.getListNotiSignalR(id);
-            if (tmp)
-            {
-                Log.Information(string.Format("Send message ok"));
-            }
-            else
-            {
-                Log.Information(string.Format("Send message fail"));
-            }
+            //bool tmp = Program.api_attendance.getListNotiSignalR(id);
+            //if (tmp)
+            //{
+            //    Log.Information(string.Format("Send message ok"));
+            //}
+            //else
+            //{
+            //    Log.Information(string.Format("Send message fail"));
+            //}
         }
     }
 }

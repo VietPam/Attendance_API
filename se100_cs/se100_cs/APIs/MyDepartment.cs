@@ -91,13 +91,14 @@ namespace se100_cs.APIs
                     return 409;
                 }
                 SqlDepartment department = new SqlDepartment();
+                department.ID = DateTime.Now.Ticks;
                 department.name = name;
                 department.code = code;
                 SqlPosition head = new SqlPosition();
                 head.title = "Trưởng phòng";
                 head.code = "HEAD";
                 head.department = department;
-                context.positions.Add(head);
+                context.positions!.Add(head);
                 context.departments.Add(department);
                 await context.SaveChangesAsync();
                 return 200;

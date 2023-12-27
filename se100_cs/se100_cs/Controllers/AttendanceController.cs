@@ -9,49 +9,48 @@ namespace se100_cs.Controllers
     [ApiController]
     public class AttendanceController:ControllerBase
     {
-        [HttpGet]
-        [Route("getListByDate")]
-        public IActionResult getListByDate(int day, int month, int year=2023)
-        {
-            //return Ok(Program.api_attendance.getListByDate(day, month, year));
-            return Ok();
-        }
+        //[HttpGet]
+        //[Route("getListByDate")]
+        //public IActionResult getListByDate(int day1, int month, int year=2023)
+        //{
+        //    //return Ok(Program.api_attendance.getListByDate(day, month, year));
+        //    return Ok();
+        //}
 
         [HttpPost]
         [Route("checkin")]
         public async Task<IActionResult> markAttendance([FromBody] _Token token)
         {
             long id = Program.api_employee.checkEmployee(token.token);
-           // return Ok(await Program.api_attendance.markAttendance(id));
-            return Ok();
-
+            return Ok(await Program.api_attendance.markAttendance(id));
         }
         [HttpPost]
         [Route("check")]
-        public async Task<IActionResult> check([FromBody] _Token token)
+        public IActionResult check([FromBody] _Token token)
         {
-            //return Ok(await Program.api_attendance.check(token.token));
-            return Ok();
+            long id = Program.api_employee.checkEmployee(token.token);
+
+            return Ok(Program.api_attendance.check(id));
 
         }
 
-        [HttpPut]
-        [Route("test/update_attendance_admin")]
-        public async Task<IActionResult> update_attendance_admin(int status)
-        {
-            //return Ok(await Program.api_attendance.update_attendance_admin(status));
-            return Ok();
+        //[HttpPut]
+        //[Route("test/update_attendance_admin")]
+        //public async Task<IActionResult> update_attendance_admin(int status)
+        //{
+        //    //return Ok(await Program.api_attendance.update_attendance_admin(status));
+        //    return Ok();
 
-        }
+        //}
 
 
-        [HttpGet]
-        [Route("getAll")]
-        public IActionResult getAll(int limit_day)
-        {
-            //string data = JsonConvert.SerializeObject(Program.api_attendance.getAll(limit_day));
-            //return Ok(data);
-            return Ok();
-        }
+        //[HttpGet]
+        //[Route("getAll")]
+        //public IActionResult getAll(int limit_day)
+        //{
+        //    //string data = JsonConvert.SerializeObject(Program.api_attendance.getAll(limit_day));
+        //    //return Ok(data);
+        //    return Ok();
+        //}
     }
 }

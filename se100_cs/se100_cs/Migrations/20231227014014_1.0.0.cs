@@ -11,30 +11,31 @@ namespace se100_cs.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "tb_atd_status",
+                columns: table => new
+                {
+                    ID = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    code = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tb_atd_status", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tb_department",
                 columns: table => new
                 {
                     ID = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "text", nullable: false),
-                    code = table.Column<string>(type: "text", nullable: false)
+                    code = table.Column<string>(type: "text", nullable: false),
+                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tb_department", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tb_payroll",
-                columns: table => new
-                {
-                    ID = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    salary = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tb_payroll", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -45,11 +46,29 @@ namespace se100_cs.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     code = table.Column<string>(type: "text", nullable: false),
                     name = table.Column<string>(type: "text", nullable: false),
-                    isdeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tb_role", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tb_setting",
+                columns: table => new
+                {
+                    ID = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    company_name = table.Column<string>(type: "text", nullable: false),
+                    company_code = table.Column<string>(type: "text", nullable: false),
+                    start_time_hour = table.Column<int>(type: "integer", nullable: false),
+                    start_time_minute = table.Column<int>(type: "integer", nullable: false),
+                    salary_per_coef = table.Column<int>(type: "integer", nullable: false),
+                    payment_date = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tb_setting", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -61,7 +80,8 @@ namespace se100_cs.Migrations
                     title = table.Column<string>(type: "text", nullable: false),
                     code = table.Column<string>(type: "text", nullable: false),
                     salary_coeffcient = table.Column<long>(type: "bigint", nullable: false),
-                    departmentID = table.Column<long>(type: "bigint", nullable: true)
+                    departmentID = table.Column<long>(type: "bigint", nullable: true),
+                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -83,16 +103,17 @@ namespace se100_cs.Migrations
                     password = table.Column<string>(type: "text", nullable: false),
                     token = table.Column<string>(type: "text", nullable: false),
                     fullName = table.Column<string>(type: "text", nullable: false),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
+                    isDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     phoneNumber = table.Column<string>(type: "text", nullable: false),
                     avatar = table.Column<string>(type: "text", nullable: false),
                     birth_day = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     gender = table.Column<bool>(type: "boolean", nullable: false),
                     cmnd = table.Column<string>(type: "text", nullable: false),
                     address = table.Column<string>(type: "text", nullable: false),
-                    roleID = table.Column<long>(type: "bigint", nullable: true),
+                    role = table.Column<int>(type: "integer", nullable: true),
                     positionID = table.Column<long>(type: "bigint", nullable: true),
-                    departmentID = table.Column<long>(type: "bigint", nullable: true)
+                    departmentID = table.Column<long>(type: "bigint", nullable: true),
+                    IdHub = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -107,11 +128,6 @@ namespace se100_cs.Migrations
                         column: x => x.positionID,
                         principalTable: "tb_position",
                         principalColumn: "ID");
-                    table.ForeignKey(
-                        name: "FK_tb_employee_tb_role_roleID",
-                        column: x => x.roleID,
-                        principalTable: "tb_role",
-                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
@@ -121,12 +137,18 @@ namespace se100_cs.Migrations
                     ID = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    status = table.Column<int>(type: "integer", nullable: false),
-                    employeeID = table.Column<long>(type: "bigint", nullable: false)
+                    employeeID = table.Column<long>(type: "bigint", nullable: false),
+                    stateID = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tb_attendance", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_tb_attendance_tb_atd_status_stateID",
+                        column: x => x.stateID,
+                        principalTable: "tb_atd_status",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_tb_attendance_tb_employee_employeeID",
                         column: x => x.employeeID,
@@ -135,10 +157,35 @@ namespace se100_cs.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "tb_payroll",
+                columns: table => new
+                {
+                    ID = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    salary = table.Column<long>(type: "bigint", nullable: false),
+                    receive_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    employeeID = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tb_payroll", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_tb_payroll_tb_employee_employeeID",
+                        column: x => x.employeeID,
+                        principalTable: "tb_employee",
+                        principalColumn: "ID");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_tb_attendance_employeeID",
                 table: "tb_attendance",
                 column: "employeeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tb_attendance_stateID",
+                table: "tb_attendance",
+                column: "stateID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tb_employee_departmentID",
@@ -151,9 +198,9 @@ namespace se100_cs.Migrations
                 column: "positionID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_employee_roleID",
-                table: "tb_employee",
-                column: "roleID");
+                name: "IX_tb_payroll_employeeID",
+                table: "tb_payroll",
+                column: "employeeID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tb_position_departmentID",
@@ -170,13 +217,19 @@ namespace se100_cs.Migrations
                 name: "tb_payroll");
 
             migrationBuilder.DropTable(
+                name: "tb_role");
+
+            migrationBuilder.DropTable(
+                name: "tb_setting");
+
+            migrationBuilder.DropTable(
+                name: "tb_atd_status");
+
+            migrationBuilder.DropTable(
                 name: "tb_employee");
 
             migrationBuilder.DropTable(
                 name: "tb_position");
-
-            migrationBuilder.DropTable(
-                name: "tb_role");
 
             migrationBuilder.DropTable(
                 name: "tb_department");

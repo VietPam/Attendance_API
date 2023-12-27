@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using se100_cs.Controllers.Attendance.ResponseDTO;
+using se100_cs.Controllers.Dashboard.Response_DTO;
 using se100_cs.Model;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Mime;
 
@@ -11,10 +14,196 @@ namespace se100_cs.APIs
 {
     public class MyAttendance
     {
-        public MyAttendance() { }
-        
 
-        //public async Task<List<Employees_Today>> getEmployees_ByWeek()
+        public MyAttendance() { }
+        public async Task<Attendance_RES> markAttendance(long user_id)
+        {
+            DateTime today = DateTime.UtcNow;
+            Attendance_RES response = new Attendance_RES();
+            using (DataContext context = new DataContext())
+            {
+                SqlEmployee? emp = context.employees!.Where(s => s.ID == user_id).Include(s => s.attendances!).ThenInclude(s => s.state).Include(s => s.department).FirstOrDefault();
+                if (emp == null)
+                {
+                    return response;
+                }
+                response.employee_name = emp.fullName;
+                if (emp.department == null)
+                {
+                    return response;
+                }
+                response.department_name = emp.department.name;
+                if (!emp.attendances!.Any())
+                {
+                    List<SqlAttendance> list = new List<SqlAttendance>();
+                    SqlAttendance newATD = new SqlAttendance();
+                    newATD.ID = DataContext.Generate_UID();
+                    newATD.employee = emp;
+                    newATD.time = today.AddHours(7);
+                    string state_code = Program.api_state.getState(newATD.time);
+                    SqlState? state = context.ATD_state.Where(s => s.code.CompareTo(state_code) == 0).FirstOrDefault();
+                    if (state == null)
+                    {
+                        return response;
+                    }
+                    newATD.state = state;
+                    context.attendances!.Add(newATD);
+                    list.Insert(0, newATD);
+                    emp.attendances = list;
+                    response.time = newATD.time;
+                    response.attendance_state = state_code;
+                    await context.SaveChangesAsync();
+                    return response;
+                }
+                SqlAttendance? sqlAttendance = emp.attendances!.First();
+                if (today.Date == sqlAttendance.time.Date)
+                {
+                    response.time = sqlAttendance.time;
+                    response.attendance_state = sqlAttendance.state!.code;
+                    return response;
+                }
+                else
+                {
+                    SqlAttendance newATD = new SqlAttendance();
+                    newATD.ID = DataContext.Generate_UID();
+                    newATD.employee = emp;
+                    newATD.time = today.AddHours(7);
+                    string state_code = Program.api_state.getState(newATD.time);
+                    SqlState? state = context.ATD_state.Where(s => s.code.CompareTo(state_code) == 0).FirstOrDefault();
+                    if (state == null)
+                    {
+                        return response;
+                    }
+                    newATD.state = state;
+                    context.attendances!.Add(newATD);
+                    emp.attendances!.Insert(0, newATD);
+                    response.time = sqlAttendance.time;
+                    response.attendance_state = sqlAttendance.state!.code;
+                    await context.SaveChangesAsync();
+                    return response;
+                }
+            }
+
+        }
+
+        public Attendance_RES check(long user_id)
+        {
+            DateTime today = DateTime.UtcNow;
+            Attendance_RES response = new Attendance_RES();
+            using (DataContext context = new DataContext())
+            {
+                SqlEmployee? emp = context.employees!.Where(s => s.ID == user_id).Include(s => s.attendances!).ThenInclude(s => s.state).Include(s => s.department).AsNoTracking().FirstOrDefault();
+                if (emp == null)
+                {
+                    return response;
+                }
+                response.employee_name = emp.fullName;
+                if (emp.department == null)
+                {
+                    return response;
+                }
+                response.department_name = emp.department.name;
+                SqlAttendance? sqlAttendance = emp.attendances!.First();
+                if (emp.attendances!.Any())
+                {
+                    if (today.Date == sqlAttendance.time.Date)
+                    {
+                        response.time = sqlAttendance.time;
+                        response.attendance_state = sqlAttendance.state!.code;
+                        return response;
+                    }
+                    else
+                    {
+                        response.time = new DateTime(1, 1, 1, 23, 59, 59);
+                        response.attendance_state = "Absent";
+                        return response;
+                    }
+                }
+                else
+                {
+                    response.time = new DateTime(1, 1, 1, 23, 59, 59);
+                    response.attendance_state = "Absent";
+                    return response;
+                }
+            }
+        }
+        public Dashboard_Attendance_RES getEmployees_Today()
+        {
+            Dashboard_Attendance_RES today = new Dashboard_Attendance_RES();
+            int ngay_hom_nay = DateTime.Now.Day;
+            int hom_nay_la_thu = (int)DateTime.Now.DayOfWeek + 1; 
+            if (hom_nay_la_thu == 1) { hom_nay_la_thu = 8; }
+            today.thu = hom_nay_la_thu;
+            today.ngay = ngay_hom_nay;
+            today.attendance = count_onTime_all_company(DateTime.Today);
+            today.late = count_Late_all_company(DateTime.Today);
+            today.absent = Program.api_employee.countTotalEmployee() - today.attendance - today.late;
+            return today;
+        }
+
+        public int count_onTime_all_company (DateTime date)
+        {
+            int count = 0;
+            using(DataContext context = new DataContext())
+            {
+                count = context.attendances!.Where(s=>s.time.Date == DateTime.UtcNow.Date && s.state!.code.CompareTo("OnTime")==0).ToList().Count();
+            }
+            return count;
+        }
+        public int count_Late_all_company(DateTime date)
+        {
+            int count = 0;
+            using (DataContext context = new DataContext())
+            {
+                count = context.attendances!.Where(s => s.time.Date == DateTime.UtcNow.Date && s.state!.code.CompareTo("Late") == 0).ToList().Count();
+            }
+            return count;
+        }
+        public List<Dashboard_Attendance_RES> getEmployees_ByWeek()
+        {
+            List<Dashboard_Attendance_RES> response = new List<Dashboard_Attendance_RES>();
+            int year = DateTime.UtcNow.Year;
+            int ngay_hom_nay = DateTime.Now.Day;
+            int thang = DateTime.Now.Month;
+            int thang_truoc = DateTime.Now.Month - 1;
+            int hom_nay_la_thu = (int)DateTime.Now.DayOfWeek + 1; // vi du thu 5, thứ 2 là bằng 2
+            if (hom_nay_la_thu == 1) { hom_nay_la_thu = 8; }
+            for (int i = hom_nay_la_thu; i >= 2; i--)
+            {
+                Dashboard_Attendance_RES today = new Dashboard_Attendance_RES();
+                using (DataContext context = new DataContext())
+                {
+                    if (ngay_hom_nay - (hom_nay_la_thu - i) < 1)
+                    {
+                        if (thang_truoc % 2 == 1)
+                        {
+                            ngay_hom_nay = 30;
+                        }
+                        else
+                        {
+                            ngay_hom_nay = 31;
+                        }
+                        hom_nay_la_thu = i;
+                        thang -= 1;
+                    }
+                    DateTime date = DateTime.UtcNow.AddDays(-(hom_nay_la_thu-i));
+                    List<SqlAttendance>? list_attendance = context.attendances!.Include(s=>s.state).Where(s =>s.time.Date == date.Date).ToList();
+                    int on_time = list_attendance.Where(s => s.state.code.CompareTo("OnTime")==0).Count();
+                    int late_coming = list_attendance.Where(s => s.state.code.CompareTo("Late") ==0).Count();
+                    int absent = Program.api_employee.countTotalEmployee() - on_time- late_coming;
+                    today.thu = i;
+                    today.ngay = ngay_hom_nay - (hom_nay_la_thu - i);
+                    today.attendance = on_time;
+                    today.absent = absent;
+                    today.late = late_coming;
+                    response.Add(today);
+                }
+            }
+            response = response.OrderBy(s => s.thu).ToList();
+            return response;
+        }
+
+        //public async Task<List<Dashboard_Attendance_RES>> getEmployees_ByWeek()
         //{
         //    List<Employees_Today> response = new List<Employees_Today>();
 
@@ -85,7 +274,7 @@ namespace se100_cs.APIs
         //            return false;
         //        }
         //    }
-            
+
         //    return false;
         //}
     }

@@ -1,4 +1,5 @@
-﻿using se100_cs.Model;
+﻿using Microsoft.EntityFrameworkCore;
+using se100_cs.Model;
 
 namespace se100_cs.APIs
 {
@@ -32,11 +33,41 @@ namespace se100_cs.APIs
                     context.ATD_state.Add(OnTime);
                     tmp = true;
                 }
-                if(tmp )
+                if (tmp)
                 {
                     await context.SaveChangesAsync();
                 }
             }
         }
+
+        public string getState(DateTime time)
+        {
+            string code = "Internal Error";
+            int hour = time.Hour;
+            int minute = time.Minute;
+            int setting_hour, setting_minute;
+            using (DataContext context = new DataContext())
+            {
+                SqlSetting? setting = context.settings.AsNoTracking().FirstOrDefault();
+                if (setting == null) {
+                    return code;
+                }
+                setting_hour = setting!.start_time_hour;
+                setting_minute = setting!.start_time_minute;
+                if (hour == 23 && minute == 59)
+                {
+                    return "Absent";
+                }
+                else if (hour * 60 + minute > setting_hour * 60 + setting_minute)// trễ
+                {
+                    return "Late";
+                }
+                else 
+                {
+                    return "OnTime";
+                }
+            }
+            
+        }     
     }
 }

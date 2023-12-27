@@ -12,8 +12,8 @@ using se100_cs.Model;
 namespace se100_cs.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231212164248_1.1.2")]
-    partial class _112
+    [Migration("20231227014014_1.0.0")]
+    partial class _100
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,33 +24,6 @@ namespace se100_cs.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("se100_cs.Model.SqlATDDetail", b =>
-                {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
-
-                    b.Property<long>("attendanceID")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("employeeId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("status")
-                        .HasColumnType("integer");
-
-                    b.Property<TimeOnly>("time")
-                        .HasColumnType("time without time zone");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("attendanceID");
-
-                    b.ToTable("tb_attendance_detail");
-                });
-
             modelBuilder.Entity("se100_cs.Model.SqlAttendance", b =>
                 {
                     b.Property<long>("ID")
@@ -59,16 +32,20 @@ namespace se100_cs.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
 
-                    b.Property<int>("day")
-                        .HasColumnType("integer");
+                    b.Property<long>("employeeID")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("month")
-                        .HasColumnType("integer");
+                    b.Property<long>("stateID")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("year")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("time")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("employeeID");
+
+                    b.HasIndex("stateID");
 
                     b.ToTable("tb_attendance");
                 });
@@ -104,6 +81,9 @@ namespace se100_cs.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
+
+                    b.Property<string>("IdHub")
+                        .HasColumnType("text");
 
                     b.Property<string>("address")
                         .IsRequired()
@@ -277,15 +257,40 @@ namespace se100_cs.Migrations
                     b.ToTable("tb_setting");
                 });
 
-            modelBuilder.Entity("se100_cs.Model.SqlATDDetail", b =>
+            modelBuilder.Entity("se100_cs.Model.SqlState", b =>
                 {
-                    b.HasOne("se100_cs.Model.SqlAttendance", "attendance")
-                        .WithMany("list_attendance")
-                        .HasForeignKey("attendanceID")
+                    b.Property<long>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
+
+                    b.Property<string>("code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("tb_atd_status");
+                });
+
+            modelBuilder.Entity("se100_cs.Model.SqlAttendance", b =>
+                {
+                    b.HasOne("se100_cs.Model.SqlEmployee", "employee")
+                        .WithMany("attendances")
+                        .HasForeignKey("employeeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("attendance");
+                    b.HasOne("se100_cs.Model.SqlState", "state")
+                        .WithMany()
+                        .HasForeignKey("stateID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("employee");
+
+                    b.Navigation("state");
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlEmployee", b =>
@@ -315,20 +320,22 @@ namespace se100_cs.Migrations
             modelBuilder.Entity("se100_cs.Model.SqlPosition", b =>
                 {
                     b.HasOne("se100_cs.Model.SqlDepartment", "department")
-                        .WithMany()
+                        .WithMany("position")
                         .HasForeignKey("departmentID");
 
                     b.Navigation("department");
                 });
 
-            modelBuilder.Entity("se100_cs.Model.SqlAttendance", b =>
-                {
-                    b.Navigation("list_attendance");
-                });
-
             modelBuilder.Entity("se100_cs.Model.SqlDepartment", b =>
                 {
                     b.Navigation("employees");
+
+                    b.Navigation("position");
+                });
+
+            modelBuilder.Entity("se100_cs.Model.SqlEmployee", b =>
+                {
+                    b.Navigation("attendances");
                 });
 
             modelBuilder.Entity("se100_cs.Model.SqlPosition", b =>

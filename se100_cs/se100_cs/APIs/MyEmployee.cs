@@ -40,7 +40,7 @@ namespace se100_cs.APIs
             List<Employee_DTO_Response> list_emp = new List<Employee_DTO_Response>();
             using (DataContext context = new DataContext())
             {
-                SqlDepartment? dep = context.departments.Where(s => s.code == departmentCode && s.isDeleted == false).Include(s=>s.employees).FirstOrDefault();
+                SqlDepartment? dep = context.departments.Where(s => s.code == departmentCode && s.isDeleted == false).Include(s => s.employees).FirstOrDefault();
                 if (dep == null)
                 {
                     return response;
@@ -48,7 +48,7 @@ namespace se100_cs.APIs
 
                 int count_pages = dep.employees.Where(s => s.isDeleted == false).Count();
                 response.pages = (int)count_pages / per_page + 1;
-                
+
                 List<SqlEmployee>? list = dep.employees.Skip((page - 1) * per_page).Take(per_page).ToList();
 
                 if (list.Count > 0)
@@ -90,7 +90,7 @@ namespace se100_cs.APIs
                 int count_pages = position.employees.Where(s => s.isDeleted == false).Count();
                 response.pages = (int)count_pages / per_page + 1;
 
-                
+
                 List<SqlEmployee>? list = position.employees.Where(s => s.isDeleted == false).Skip((page - 1) * per_page).Take(per_page).ToList();
                 if (list.Any())
                 {
@@ -129,11 +129,11 @@ namespace se100_cs.APIs
         {
             using (DataContext context = new DataContext())
             {
-                if (string.IsNullOrEmpty(email) ||string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(phoneNumber) || string.IsNullOrEmpty(address) || string.IsNullOrEmpty(avatar) || string.IsNullOrEmpty(cmnd))
+                if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(phoneNumber) || string.IsNullOrEmpty(address) || string.IsNullOrEmpty(avatar) || string.IsNullOrEmpty(cmnd))
                 {
                     return false;
                 }
-                SqlPosition? position = context.positions!.Where(s => s.ID == position_id).Include(s=>s.department).FirstOrDefault();
+                SqlPosition? position = context.positions!.Where(s => s.ID == position_id).Include(s => s.department).FirstOrDefault();
                 if (position == null)
                 {
                     return false;
@@ -145,6 +145,7 @@ namespace se100_cs.APIs
                     return false;
                 }
                 SqlEmployee item = new SqlEmployee();
+                item.ID = DataContext.Generate_UID();
                 item.email = email;
                 item.password = DataContext.randomString(6);
                 item.fullName = fullName;
@@ -327,15 +328,8 @@ namespace se100_cs.APIs
         {
             using (DataContext context = new DataContext())
             {
-                SqlEmployee? employee = context.employees.Where(s => s.token == token && s.isDeleted == false).FirstOrDefault();
-                if (employee == null)
-                {
-                    return -1;
-                }
-                else
-                {
-                    return employee.ID;
-                }
+                long employee = context.employees!.Where(s => s.token == token && s.isDeleted == false).AsNoTracking().Select(s => s.ID).FirstOrDefault();
+                return employee;
             }
         }
 
@@ -406,7 +400,7 @@ namespace se100_cs.APIs
             List<Emp_perDep> response = new List<Emp_perDep>();
             using (DataContext context = new DataContext())
             {
-                List<SqlDepartment>? list_dep = context.departments.Where(s=>s.employees.Count()>0).Take(limit_emp).Include(s => s.employees).ToList();
+                List<SqlDepartment>? list_dep = context.departments.Where(s => s.employees.Count() > 0).Take(limit_emp).Include(s => s.employees).ToList();
                 if (list_dep.Count() < limit_emp)
                 {
                     list_dep = context.departments.Take(limit_emp).Include(s => s.employees).ToList();

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace se100_cs.Model
 {
-    [Table("tb_atd_status")]
+    [Table("tb_state")]
     public class SqlState
     {
         [Key]
