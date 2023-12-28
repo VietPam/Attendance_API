@@ -14,3 +14,5 @@ ENTRYPOINT ["dotnet", "se100_cs.dll"]
 
 #docker build -t 20522153/se100:1.0.7 .
 #docker push 20522153/se100:1.0.7
+
+#docker run -d -p 5000:80 20522153/se100:1.0.8

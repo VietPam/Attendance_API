@@ -47,22 +47,22 @@ namespace se100_cs.Controllers
         //        return BadRequest();
         //    }
         //}
-        
-        
-        //[HttpPut]
-        //[Route("updateOne")]
-        //public async Task<IActionResult> updateOne([FromBody] Request_Position_DTO dto, long id)
-        //{
-        //    bool tmp = await Program.api_position.updateOne(id, dto.title, dto.code, dto.salary_coeffcient);
-        //    if (tmp)
-        //    {
-        //        return Ok();
-        //    }
-        //    else
-        //    {
-        //        return BadRequest();
-        //    }
-        //}
+
+
+        [HttpPut]
+        [Route("updateOne")]
+        public async Task<IActionResult> updateOne([FromBody] Request_Position_DTO dto, long id)
+        {
+            bool tmp = await Program.api_position.updateOne(id, dto.title, dto.code, dto.salary_coeffcient);
+            if (tmp)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
 
         //[HttpDelete]
         //[Route("deleteOne")]

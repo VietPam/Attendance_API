@@ -34,6 +34,12 @@ namespace se100_cs.Controllers
 
         }
 
+        [HttpGet]
+        [Route("getList")]
+        public IActionResult getList(DateTime date , string department_code ="all", int type_attendance=-1)
+        {
+            return Ok();
+        }
         //[HttpPut]
         //[Route("test/update_attendance_admin")]
         //public async Task<IActionResult> update_attendance_admin(int status)
