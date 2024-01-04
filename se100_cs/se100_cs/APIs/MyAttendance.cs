@@ -16,6 +16,29 @@ namespace se100_cs.APIs
     {
 
         public MyAttendance() { }
+        public async Task SendNotiBackgroundTask()
+        {
+            using (DataContext context = new DataContext())
+            {
+                SqlEmployee qv = await context.employees
+                .Where(s => s.ID == 1)
+                .FirstOrDefaultAsync();
+
+                if (qv != null)
+                {
+                    bool tmp = await Task.Run(() => Program.api_attendance.getListNotiSignalR(qv.IdHub));
+
+                    if (tmp)
+                    {
+                        Log.Information("Send message ok");
+                    }
+                    else
+                    {
+                        Log.Information("Send message fail");
+                    }
+                }
+            }
+        }
         public async Task<Attendance_RES> markAttendance(long user_id)
         {
             DateTime today = DateTime.UtcNow;
@@ -38,7 +61,7 @@ namespace se100_cs.APIs
                     List<SqlAttendance> list = new List<SqlAttendance>();
                     SqlAttendance newATD = new SqlAttendance();
                     newATD.ID = DataContext.Generate_UID();
-                    newATD.department=emp.department;
+                    newATD.department = emp.department;
                     newATD.employee = emp;
                     newATD.time = today.AddHours(7);
                     string state_code = Program.api_state.getState(newATD.time);
@@ -54,6 +77,13 @@ namespace se100_cs.APIs
                     response.time = newATD.time;
                     response.attendance_state = state_code;
                     await context.SaveChangesAsync();
+
+
+                    //send signalr
+
+                    SendNotiBackgroundTask();
+
+                    //
                     return response;
                 }
                 SqlAttendance? sqlAttendance = emp.attendances!.First();
@@ -82,8 +112,11 @@ namespace se100_cs.APIs
                     response.time = sqlAttendance.time;
                     response.attendance_state = sqlAttendance.state!.code;
                     await context.SaveChangesAsync();
+
+                    SendNotiBackgroundTask();
                     return response;
                 }
+
             }
 
         }
@@ -140,7 +173,7 @@ namespace se100_cs.APIs
         {
             Dashboard_Attendance_RES today = new Dashboard_Attendance_RES();
             int ngay_hom_nay = DateTime.Now.Day;
-            int hom_nay_la_thu = (int)DateTime.Now.DayOfWeek + 1; 
+            int hom_nay_la_thu = (int)DateTime.Now.DayOfWeek + 1;
             if (hom_nay_la_thu == 1) { hom_nay_la_thu = 8; }
             today.thu = hom_nay_la_thu;
             today.ngay = ngay_hom_nay;
@@ -150,12 +183,12 @@ namespace se100_cs.APIs
             return today;
         }
 
-        public int count_onTime_all_company (DateTime date)
+        public int count_onTime_all_company(DateTime date)
         {
             int count = 0;
-            using(DataContext context = new DataContext())
+            using (DataContext context = new DataContext())
             {
-                count = context.attendances!.Where(s=>s.time.Date == DateTime.UtcNow.Date && s.state!.code.CompareTo("OnTime")==0).ToList().Count();
+                count = context.attendances!.Where(s => s.time.Date == DateTime.UtcNow.Date && s.state!.code.CompareTo("OnTime") == 0).ToList().Count();
             }
             return count;
         }
@@ -195,11 +228,11 @@ namespace se100_cs.APIs
                         hom_nay_la_thu = i;
                         thang -= 1;
                     }
-                    DateTime date = DateTime.UtcNow.AddDays(-(hom_nay_la_thu-i));
-                    List<SqlAttendance>? list_attendance = context.attendances!.Include(s=>s.state).Where(s =>s.time.Date == date.Date).ToList();
-                    int on_time = list_attendance.Where(s => s.state.code.CompareTo("OnTime")==0).Count();
-                    int late_coming = list_attendance.Where(s => s.state.code.CompareTo("Late") ==0).Count();
-                    int absent = Program.api_employee.countTotalEmployee() - on_time- late_coming;
+                    DateTime date = DateTime.UtcNow.AddDays(-(hom_nay_la_thu - i));
+                    List<SqlAttendance>? list_attendance = context.attendances!.Include(s => s.state).Where(s => s.time.Date == date.Date).ToList();
+                    int on_time = list_attendance.Where(s => s.state.code.CompareTo("OnTime") == 0).Count();
+                    int late_coming = list_attendance.Where(s => s.state.code.CompareTo("Late") == 0).Count();
+                    int absent = Program.api_employee.countTotalEmployee() - on_time - late_coming;
                     today.thu = i;
                     today.ngay = ngay_hom_nay - (hom_nay_la_thu - i);
                     today.attendance = on_time;
@@ -212,22 +245,22 @@ namespace se100_cs.APIs
             return response;
         }
 
-        public List<Item_Attendance_Res> getList(string day = "2024-01-03", string department_code = "all")
+        public List<Item_Attendance_Res> getList(string day, string department_code)
         {
             List<Item_Attendance_Res> response = new List<Item_Attendance_Res>();
             DateTime date = DateTime.Parse(day);
             using (DataContext context = new DataContext())
             {
                 List<SqlAttendance> list;
-                if (department_code.CompareTo("all") == 0){
-                    list = context.attendances.Where(s => s.time.Day.CompareTo(date.Day) == 0).Include(s => s.employee).Include(s=>s.department).Include(s => s.state).ToList();
+                if (department_code.CompareTo("all") == 0)
+                {
+                    list = context.attendances.Where(s => s.time.Day.CompareTo(date.Day) == 0).Include(s => s.employee).Include(s => s.department).Include(s => s.state).ToList();
                 }
                 else
                 {
-                    list = context.attendances.Where(s => s.time.Day.CompareTo(date.Day) == 0 
-                                            && s.department.code.CompareTo(department_code)==0).Include(s => s.employee).Include(s => s.department).Include(s => s.state).ToList();
+                    list = context.attendances.Where(s => s.time.Day.CompareTo(date.Day) == 0
+                                            && s.department.code.CompareTo(department_code) == 0).Include(s => s.employee).Include(s => s.department).Include(s => s.state).ToList();
                 }
-                
                 foreach (SqlAttendance attendance in list)
                 {
                     Item_Attendance_Res item = new Item_Attendance_Res();
@@ -237,86 +270,43 @@ namespace se100_cs.APIs
                     item.attendance_state = attendance.state.code;
                     item.department_name = attendance.department.code;
 
-                    response.Add(item); 
+                    response.Add(item);
                 }
                 Log.Information(list.Count().ToString());
             }
             return response;
         }
 
-        //public async Task<List<Dashboard_Attendance_RES>> getEmployees_ByWeek()
-        //{
-        //    List<Employees_Today> response = new List<Employees_Today>();
+        public string getToday()
+        {
+            string today = DateTime.Today.ToString("yyyy-01-dd");
+            return today;
+        }
+        public bool getListNotiSignalR(string idHub)
+        {
+            DateTime now = DateTime.UtcNow;
+            using (DataContext context = new DataContext())
+            {
+                SqlEmployee? user = context.employees.Where(s => s.IdHub.CompareTo(idHub) == 0).FirstOrDefault();
+                if (user == null)
+                {
+                    return false;
+                }
+                string today = getToday();
+                List<Item_Attendance_Res>? list = Program.api_attendance.getList(getToday(), "all").OrderByDescending(s => s.time).ToList();
+                try
+                {
+                    string data = JsonConvert.SerializeObject(list);
+                    Program.notiHub?.Clients.Client(user.IdHub).SendCoreAsync("GetListNoti", new object[] { data });
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                    return false;
+                }
+            }
 
-        //    int ngay_hom_nay = DateTime.Now.Day;
-        //    int thang = DateTime.Now.Month;
-        //    int thang_truoc = DateTime.Now.Month - 1;
-        //    int hom_nay_la_thu = (int)DateTime.Now.DayOfWeek + 1; // vi du thu 5, thứ 2 là bằng 2
-        //    if (hom_nay_la_thu == 1) { hom_nay_la_thu = 8; }
-        //    for (int i = hom_nay_la_thu; i >= 2; i--)
-        //    {
-        //        Employees_Today today = new Employees_Today();
-        //        using (DataContext context = new DataContext())
-        //        {
-        //            if (ngay_hom_nay - (hom_nay_la_thu - i) < 1)
-        //            {
-        //                if (thang_truoc % 2 == 1)
-        //                {
-        //                    ngay_hom_nay = 30;
-        //                }
-        //                else
-        //                {
-        //                    ngay_hom_nay = 31;
-        //                }
-        //                hom_nay_la_thu = i;
-        //                thang -= 1;
-        //            }
-        //            SqlAttendance? atd_today = context.attendances.Include(s => s.list_attendance).Where(s => s.day == ngay_hom_nay - (hom_nay_la_thu - i) && s.month == thang && s.year == DateTime.Now.Year).FirstOrDefault();
-        //            if (atd_today == null || !atd_today.list_attendance.Any())
-        //            {
-        //                await init_attendance_today_async(ngay_hom_nay - (hom_nay_la_thu - i), thang, DateTime.Now.Year);
-        //            }
-        //            atd_today = context.attendances.Include(s => s.list_attendance).Where(s => s.day == ngay_hom_nay - (hom_nay_la_thu - i) && s.month == thang && s.year == DateTime.Now.Year).FirstOrDefault();
-        //            int on_time = atd_today.list_attendance.Where(s => s.status == 0).Count();
-        //            int late_coming = atd_today.list_attendance.Where(s => s.status == 1).Count();
-        //            int absent = atd_today.list_attendance.Where(s => s.status == 2).Count();
-
-        //            today.thu = i;
-        //            today.ngay = ngay_hom_nay - (hom_nay_la_thu - i);
-        //            today.on_time = on_time;
-        //            today.absent = absent;
-        //            today.late_coming = late_coming;
-        //            response.Add(today);
-        //        }
-        //    }
-        //    response = response.OrderBy(s => s.thu).ToList();
-        //    return response;
-        //}
-
-        //public bool getListNotiSignalR(string idHub)
-        //{
-        //    DateTime now = DateTime.UtcNow;
-        //    using (DataContext context = new DataContext())
-        //    {
-        //        SqlEmployee? user = context.employees.Where(s => s.IdHub.CompareTo(idHub) == 0).FirstOrDefault();
-        //        if (user == null)
-        //        {
-        //            return false;
-        //        }
-        //        List<Attendance_DTO_Response>? list = Program.api_attendance.getListByDate(now.Day, now.Month, now.Year).Take(5).ToList();
-        //        try
-        //        {
-        //            string data = JsonConvert.SerializeObject(list);
-        //            Program.notiHub?.Clients.Client(user.IdHub).SendCoreAsync("GetListNoti", new object[] { data });
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Log.Error(ex.Message);
-        //            return false;
-        //        }
-        //    }
-
-        //    return false;
-        //}
+            return false;
+        }
     }
 }

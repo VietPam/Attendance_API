@@ -1,0 +1,64 @@
+2024-01-04 16:48:54.076 +07:00 [INF] 1
+2024-01-04 17:01:46.928 +07:00 [INF] User: new connection vqMMtsQCEcxTmrs3nQLBjw
+2024-01-04 17:02:55.170 +07:00 [INF] User: new connection 5j1MaZDfL3zXnTsk5h8uSg
+2024-01-04 17:02:55.170 +07:00 [INF] User: new connection aKjFQRSsgLCvXE0UGi49Gw
+2024-01-04 17:03:22.968 +07:00 [INF] Send message fail
+2024-01-04 17:04:05.728 +07:00 [INF] User: new connection HkCsxB3F0Iyds0yYybORJA
+2024-01-04 17:04:07.711 +07:00 [INF] User: new connection hnWU842-V4qCg-2hk-GVSw
+2024-01-04 17:05:24.438 +07:00 [INF] User: remove client HkCsxB3F0Iyds0yYybORJA
+2024-01-04 17:05:25.003 +07:00 [INF] User: new connection Vf3tH2WMWlbPXg8eOoB6FA
+2024-01-04 17:05:38.779 +07:00 [INF] Reconnect ok
+2024-01-04 17:05:56.969 +07:00 [INF] 1
+2024-01-04 17:05:57.189 +07:00 [INF] Send message fail
+2024-01-04 17:06:14.424 +07:00 [INF] User: remove client Vf3tH2WMWlbPXg8eOoB6FA
+2024-01-04 17:06:14.424 +07:00 [INF] User: remove client hnWU842-V4qCg-2hk-GVSw
+2024-01-04 17:06:25.676 +07:00 [INF] User: new connection nBpdsLLU1J56zJBOlVVpdw
+2024-01-04 17:06:40.766 +07:00 [INF] Reconnect ok
+2024-01-04 17:06:55.938 +07:00 [INF] 1
+2024-01-04 17:06:55.939 +07:00 [INF] Send message fail
+2024-01-04 17:14:05.757 +07:00 [INF] User: new connection BUNuTnZcjcZhJjXY9x12Wg
+2024-01-04 17:14:38.195 +07:00 [INF] Reconnect ok
+2024-01-04 17:14:47.833 +07:00 [INF] 1
+2024-01-04 17:14:47.931 +07:00 [INF] Send message fail
+2024-01-04 17:15:34.251 +07:00 [INF] User: remove client BUNuTnZcjcZhJjXY9x12Wg
+2024-01-04 17:15:37.713 +07:00 [INF] User: new connection Q4_xE3Im3-qc_p8QY5SqYQ
+2024-01-04 17:15:46.084 +07:00 [INF] Reconnect ok
+2024-01-04 17:16:01.205 +07:00 [INF] 1
+2024-01-04 17:16:42.794 +07:00 [INF] User: new connection O5psm8aZU66HUj94BgsbcQ
+2024-01-04 17:16:46.857 +07:00 [INF] Reconnect ok
+2024-01-04 17:17:33.744 +07:00 [INF] User: new connection z2wFiAIzOSyWAgPmpXJnaQ
+2024-01-04 17:17:44.639 +07:00 [INF] Reconnect ok
+2024-01-04 17:18:43.787 +07:00 [INF] User: new connection e6I5o6hCana4BUTj_JkwEw
+2024-01-04 17:18:43.785 +07:00 [INF] User: new connection Bevzq6qTEAjPrKgeyqVPyg
+2024-01-04 17:18:52.200 +07:00 [INF] Reconnect ok
+2024-01-04 17:18:55.428 +07:00 [INF] User: remove client Bevzq6qTEAjPrKgeyqVPyg
+2024-01-04 17:18:55.428 +07:00 [INF] User: remove client e6I5o6hCana4BUTj_JkwEw
+2024-01-04 17:19:06.849 +07:00 [INF] User: new connection vJUWMgvTKVaeQYbIF9-u4g
+2024-01-04 17:19:18.213 +07:00 [INF] Reconnect ok
+2024-01-04 17:20:22.490 +07:00 [INF] User: new connection Lu_Y012vlfo_7AAn0KVEXQ
+2024-01-04 17:20:22.488 +07:00 [INF] User: new connection Z2rKmIZY9qGUKbQR1atYsw
+2024-01-04 17:20:32.289 +07:00 [INF] Reconnect ok
+2024-01-04 17:21:02.213 +07:00 [INF] User: new connection R5HQCbOjcxyqUKhgPWlLgw
+2024-01-04 17:21:08.419 +07:00 [INF] Reconnect ok
+2024-01-04 17:21:20.697 +07:00 [INF] User: new connection 1hakvWlMstk19Y5Hbj1pbg
+2024-01-04 17:21:20.958 +07:00 [INF] 0
+2024-01-04 17:21:21.040 +07:00 [INF] Send message fail
+2024-01-04 17:22:27.272 +07:00 [INF] 1
+2024-01-04 17:22:29.904 +07:00 [INF] Send message fail
+2024-01-04 17:22:56.188 +07:00 [INF] 2
+2024-01-04 17:22:56.189 +07:00 [INF] Send message fail
+2024-01-04 17:24:28.305 +07:00 [INF] User: new connection qDeTQ65sULaNwdhY4hpiyg
+2024-01-04 17:24:35.037 +07:00 [INF] Reconnect ok
+2024-01-04 17:24:40.985 +07:00 [INF] User: new connection qFRCHHM181g4pEdPdW8v_Q
+2024-01-04 17:25:04.111 +07:00 [INF] 2
+2024-01-04 17:25:04.207 +07:00 [INF] Send message fail
+2024-01-04 17:25:17.403 +07:00 [INF] 3
+2024-01-04 17:25:17.403 +07:00 [INF] Send message fail
+2024-01-04 17:48:03.760 +07:00 [INF] User: new connection eTgY0KJOO2XQpwul-n8Syw
+2024-01-04 17:48:33.311 +07:00 [INF] Reconnect ok
+2024-01-04 17:48:41.192 +07:00 [INF] 3
+2024-01-04 17:48:41.288 +07:00 [INF] Send message fail
+2024-01-04 17:48:58.956 +07:00 [INF] 4
+2024-01-04 17:48:58.957 +07:00 [INF] Send message fail
+2024-01-04 17:50:38.413 +07:00 [INF] 5
+2024-01-04 17:50:38.414 +07:00 [INF] Send message fail

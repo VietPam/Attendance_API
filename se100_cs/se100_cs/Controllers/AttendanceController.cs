@@ -36,9 +36,11 @@ namespace se100_cs.Controllers
 
         }
 
+       
+
         [HttpGet]
         [Route("getList")]
-        public IActionResult getList(string date = "2024-01-03", string department_code = "all")
+        public IActionResult getList(string date = "2024-01-04", string department_code = "all")
         {
             return Ok(Program.api_attendance.getList(date,department_code));
         }
