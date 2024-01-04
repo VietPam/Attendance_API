@@ -17,6 +17,7 @@ namespace se100_cs.Controllers
         //    return Ok();
         //}
         DateTime today = DateTime.Today;
+         
 
         [HttpPost]
         [Route("checkin")]
