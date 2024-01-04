@@ -38,6 +38,7 @@ namespace se100_cs.APIs
                     List<SqlAttendance> list = new List<SqlAttendance>();
                     SqlAttendance newATD = new SqlAttendance();
                     newATD.ID = DataContext.Generate_UID();
+                    newATD.department=emp.department;
                     newATD.employee = emp;
                     newATD.time = today.AddHours(7);
                     string state_code = Program.api_state.getState(newATD.time);
@@ -68,6 +69,7 @@ namespace se100_cs.APIs
                     newATD.ID = DataContext.Generate_UID();
                     newATD.employee = emp;
                     newATD.time = today.AddHours(7);
+                    newATD.department = emp.department;
                     string state_code = Program.api_state.getState(newATD.time);
                     SqlState? state = context.ATD_state.Where(s => s.code.CompareTo(state_code) == 0).FirstOrDefault();
                     if (state == null)
@@ -103,6 +105,13 @@ namespace se100_cs.APIs
                     return response;
                 }
                 response.department_name = emp.department.name;
+                if (!emp.attendances!.Any())
+                {
+                    response.time = new DateTime(1, 1, 1, 23, 59, 59);
+                    response.attendance_state = "Absent";
+                    return response;
+                }
+
                 SqlAttendance? sqlAttendance = emp.attendances!.First();
                 if (emp.attendances!.Any())
                 {
@@ -200,6 +209,38 @@ namespace se100_cs.APIs
                 }
             }
             response = response.OrderBy(s => s.thu).ToList();
+            return response;
+        }
+
+        public List<Item_Attendance_Res> getList(string day = "2024-01-03", string department_code = "all")
+        {
+            List<Item_Attendance_Res> response = new List<Item_Attendance_Res>();
+            DateTime date = DateTime.Parse(day);
+            using (DataContext context = new DataContext())
+            {
+                List<SqlAttendance> list;
+                if (department_code.CompareTo("all") == 0){
+                    list = context.attendances.Where(s => s.time.Day.CompareTo(date.Day) == 0).Include(s => s.employee).Include(s=>s.department).Include(s => s.state).ToList();
+                }
+                else
+                {
+                    list = context.attendances.Where(s => s.time.Day.CompareTo(date.Day) == 0 
+                                            && s.department.code.CompareTo(department_code)==0).Include(s => s.employee).Include(s => s.department).Include(s => s.state).ToList();
+                }
+                
+                foreach (SqlAttendance attendance in list)
+                {
+                    Item_Attendance_Res item = new Item_Attendance_Res();
+                    item.employee_name = attendance.employee.fullName;
+                    item.avatar = attendance.employee.avatar;
+                    item.time = attendance.time;
+                    item.attendance_state = attendance.state.code;
+                    item.department_name = attendance.department.code;
+
+                    response.Add(item); 
+                }
+                Log.Information(list.Count().ToString());
+            }
             return response;
         }
 

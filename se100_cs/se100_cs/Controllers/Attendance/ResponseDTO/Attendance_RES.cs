@@ -7,4 +7,12 @@
         public string? attendance_state { get; set; } = "Absent";
         public string? department_name { get; set; } = "";
     }
+    public class Item_Attendance_Res
+    {
+        public string? employee_name { get; set; } = "";
+        public string avatar { get; set; }
+        public DateTime time { get; set; } = new DateTime(1, 1, 1, 23, 59, 59);
+        public string? attendance_state { get; set; } = "Absent";
+        public string? department_name { get; set; } = "";
+    }
 }

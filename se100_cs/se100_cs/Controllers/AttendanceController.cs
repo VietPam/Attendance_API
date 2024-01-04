@@ -7,7 +7,7 @@ namespace se100_cs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AttendanceController:ControllerBase
+    public class AttendanceController : ControllerBase
     {
         //[HttpGet]
         //[Route("getListByDate")]
@@ -16,6 +16,7 @@ namespace se100_cs.Controllers
         //    //return Ok(Program.api_attendance.getListByDate(day, month, year));
         //    return Ok();
         //}
+        DateTime today = DateTime.Today;
 
         [HttpPost]
         [Route("checkin")]
@@ -36,9 +37,9 @@ namespace se100_cs.Controllers
 
         [HttpGet]
         [Route("getList")]
-        public IActionResult getList(DateTime date , string department_code ="all", int type_attendance=-1)
+        public IActionResult getList(string date = "2024-01-03", string department_code = "all")
         {
-            return Ok();
+            return Ok(Program.api_attendance.getList(date,department_code));
         }
         //[HttpPut]
         //[Route("test/update_attendance_admin")]

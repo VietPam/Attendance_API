@@ -304,14 +304,14 @@ namespace se100_cs.APIs
             }
             using (DataContext context = new DataContext())
             {
-                SqlEmployee? employee = context.employees!.Where(s => s.email == email).FirstOrDefault();
+                SqlEmployee? employee = context.employees!.Where(s => s.email == email.ToLower()).AsNoTracking().FirstOrDefault();
                 if (employee == null)
                 {
                     return response;
                 }
                 else
                 {
-                    if (employee.password != password)
+                    if (employee.password.CompareTo(password) is not 0)
                     {
                         return response;
                     }
