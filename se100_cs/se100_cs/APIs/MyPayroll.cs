@@ -25,29 +25,21 @@ namespace se100_cs.APIs
                         .ThenInclude(s => s.position)
                         .Include(s => s.employees!)
                         .ThenInclude(s => s.attendances)
+                            
                         .AsNoTracking()
                         .ToList();
                 }
                 else
                 {
-                    departments[0] = context.departments!
+                    departments!.Add(context!.departments!
                         .Include(s => s.employees!)
                         .ThenInclude(s => s.position!)
                         .Include(s => s.employees!)
                         .ThenInclude(s => s.attendances!)
                         .Where(s => s.code!.CompareTo(department_code) == 0)
-
-                         .Select(s => new SqlDepartment
-                         {
-                             employees = s.employees!.Select(e => new SqlEmployee
-                             {
-                                 attendances = e.attendances!
-                                                .Where(x => x.time!.CompareTo(start) > 0 && x.time!.CompareTo(start) < 0)
-                                                .ToList()
-                             }).ToList()
-                         })
+                         
                         .AsNoTracking()
-                        .FirstOrDefault();
+                        .FirstOrDefault());
                 }
                 if (!departments.Any())
                 {
@@ -86,7 +78,7 @@ namespace se100_cs.APIs
                     }
                     else
                     {
-                        item.day_of_work = employee.attendances.Count();
+                        item.day_of_work = employee.attendances.Where(s=>s.time.CompareTo(start)>0 && s.time.CompareTo(end)<0).Count();
                     }
 
                     item.salary = item.Coefficient * item.day_of_work * salary_per_coef;
