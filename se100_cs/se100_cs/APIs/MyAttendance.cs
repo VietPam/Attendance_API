@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MessagePack.Formatters;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using se100_cs.Controllers.Attendance.ResponseDTO;
 using se100_cs.Controllers.Dashboard.Response_DTO;
@@ -27,7 +28,7 @@ namespace se100_cs.APIs
 
                 if (qv != null)
                 {
-                    bool tmp =  Program.api_attendance.getListNotiSignalR(qv.IdHub);
+                    bool tmp = Program.api_attendance.getListNotiSignalR(qv.IdHub);
 
                     if (tmp)
                     {
@@ -82,7 +83,7 @@ namespace se100_cs.APIs
 
                     //send signalr
 
-                    Task.Run (()=>SendNotiBackgroundTask());
+                    Task.Run(() => SendNotiBackgroundTask());
 
                     //
                     return response;
@@ -309,6 +310,66 @@ namespace se100_cs.APIs
             }
 
             return false;
+        }
+
+
+        public async Task tool_add_attendance()
+        {
+            using (DataContext context = new DataContext())
+            {
+                List<SqlEmployee> emps = context.employees
+                    .Where(s => s.isDeleted == false)
+                    .Include(s => s.attendances)
+                    .Include(s=>s.department)
+                    .ToList();
+                List<SqlState> states = context.ATD_state.ToList();
+                SqlState? ontime = states!.Where(s=>s.code.CompareTo("OnTime")==0).FirstOrDefault();
+                SqlState? Absent = states!.Where(s=>s.code.CompareTo("Absent")==0).FirstOrDefault();
+                SqlState? late = states!.Where(s=>s.code.CompareTo("Late")==0).FirstOrDefault();
+
+                int today = DateTime.Today.Day;
+                for (DateTime i = DateTime.Today.AddDays(-today+1 ); i <= DateTime.Today; i=i.AddDays(1))
+                {
+                    for(int j =0; j < emps.Count; j++)
+                    {
+                        if (!emps[j].attendances!.Where(s => s.time.Day == i.Day).Any()) // ko có điểm danh
+                        {
+                            SqlAttendance attendance = new SqlAttendance();
+                            attendance.ID= DataContext.Generate_UID();
+                            attendance.employee = emps[j];
+                            attendance.department = emps[j].department;
+                            if (attendance.ID % 3 == 0) // ontime
+                            {
+                                attendance.time = new DateTime(
+                                    i.Year,
+                                    i.Month,
+                                    i.Day,
+                                    7, 28, 0).ToUniversalTime().AddHours(7);
+                                attendance.state = ontime;
+                                context.attendances.Add(attendance);
+                            }
+                            else if (attendance.ID % 3 == 1) // late
+                            {
+                                attendance.time = new DateTime(
+                                    i.Year,
+                                    i.Month,
+                                    i.Day,
+                                    9, 12, 0).ToUniversalTime().AddHours(7);
+                                attendance.state = late;
+                                context.attendances.Add(attendance);
+                            }
+                            else // absent
+                            {
+
+                            }
+                        }
+
+
+                    }
+                }
+                int xz =await context.SaveChangesAsync();
+                Log.Information(xz.ToString());
+            }
         }
     }
 }

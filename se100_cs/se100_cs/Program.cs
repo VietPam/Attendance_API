@@ -92,6 +92,7 @@ namespace se100_cs
 
                 app.MapControllers();
                 await api_state.initAsync();
+                //await api_attendance.tool_add_attendance();
                 app.Run();
             }
             catch (Exception e)
