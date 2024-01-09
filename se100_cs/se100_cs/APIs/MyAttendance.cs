@@ -330,6 +330,7 @@ namespace se100_cs.APIs
                 int today = DateTime.Today.Day;
                 for (DateTime i = DateTime.Today.AddDays(-today+1 ); i <= DateTime.Today; i=i.AddDays(1))
                 {
+                    int random = DataContext.Generate_UID();
                     for(int j =0; j < emps.Count; j++)
                     {
                         if (!emps[j].attendances!.Where(s => s.time.Day == i.Day).Any()) // ko có điểm danh
@@ -338,7 +339,7 @@ namespace se100_cs.APIs
                             attendance.ID= DataContext.Generate_UID();
                             attendance.employee = emps[j];
                             attendance.department = emps[j].department;
-                            if (attendance.ID % 3 == 0) // ontime
+                            if (random% 3 == 0) // ontime
                             {
                                 attendance.time = new DateTime(
                                     i.Year,
@@ -348,7 +349,7 @@ namespace se100_cs.APIs
                                 attendance.state = ontime;
                                 context.attendances.Add(attendance);
                             }
-                            else if (attendance.ID % 3 == 1) // late
+                            else if (random % 3 == 1) // late
                             {
                                 attendance.time = new DateTime(
                                     i.Year,

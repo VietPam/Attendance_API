@@ -1,11 +1,15 @@
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using se100_cs.APIs;
+using se100_cs.Configuration;
 using se100_cs.Hubs;
 using se100_cs.Model;
+using se100_cs.Services;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
+using StackExchange.Redis;
 
 namespace se100_cs
 {
@@ -48,6 +52,21 @@ namespace se100_cs
                             .AllowCredentials();
                     });
                 });
+
+                var redisConfiguration = new RedisConfiguration();
+                builder.Configuration.GetSection("RedisConfiguration").Bind(redisConfiguration);
+                builder.Services.AddSingleton(redisConfiguration);
+
+                if (!redisConfiguration.Enable)
+                    return;
+
+                builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
+                    ConnectionMultiplexer.Connect(redisConfiguration.ConnectionString)
+                );
+                builder.Services.AddStackExchangeRedisCache(option =>
+                    option.Configuration = redisConfiguration.ConnectionString
+                );
+                builder.Services.AddSingleton<ICacheService,CacheRepository>();
 
                 builder.Services.AddSignalR(options =>
                 {

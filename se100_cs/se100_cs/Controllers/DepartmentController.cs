@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using se100_cs.Filters;
 
 namespace se100_cs.Controllers
 {
@@ -8,6 +9,7 @@ namespace se100_cs.Controllers
     public class DepartmentController : ControllerBase
     {
         [HttpGet]
+        [Cache(60)]
         [Route("getAll")]
         public IActionResult getAll(int page=1, int per_page=10)
         {
