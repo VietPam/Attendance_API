@@ -1,8 +1,0 @@
-2023-12-26 15:30:25.843 +07:00 [ERR] Failed to bind to address http://127.0.0.1:5000: address already in use.
-2023-12-26 15:32:53.861 +07:00 [ERR] Failed to bind to address http://127.0.0.1:5000: address already in use.
-2023-12-26 22:01:18.725 +07:00 [ERR] 42P01: relation "tb_atd_status" does not exist
-
-POSITION: 29
-2023-12-26 22:29:54.831 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
-2023-12-26 22:30:14.719 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
-2023-12-26 22:30:23.227 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
