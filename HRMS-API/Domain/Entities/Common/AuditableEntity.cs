@@ -1,4 +1,4 @@
-﻿namespace Domain.Common;
+﻿namespace Domain.Entities.Common;
 public abstract class AuditableEntity<TId>
 {
     public AuditableEntity()
@@ -10,8 +10,10 @@ public abstract class AuditableEntity<TId>
     public virtual TId Id { get; protected set; }
     public DateTime? Created { get; set; }
     public DateTime? LastModified { get; set; }
+    public DateTime? Deleted { get; set; }
     public string? CreatedBy { get; set; } = string.Empty;
     public string? LastModifiedBy { get; set; }
+    public string? DeletedBy { get; set; }
 
     int? _requestedHashCode;
 
