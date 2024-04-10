@@ -7,8 +7,15 @@ environment:
   sdk: '>=3.3.3 <4.0.0'
 
 dependencies:
+  barcode_scan2: ^4.3.0
+  cached_network_image: ^3.3.1
   flutter:
     sdk: flutter
+  flutter_easyloading: ^3.0.5
+  flutter_svg: ^2.0.10+1
+  flutter_tts: ^4.0.2
+  http: ^1.2.1
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:

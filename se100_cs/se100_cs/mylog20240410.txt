@@ -1,0 +1,2 @@
+2024-04-10 22:58:04.406 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2024-04-10 22:58:28.141 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.

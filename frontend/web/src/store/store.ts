@@ -15,6 +15,7 @@ import { PersistPartial } from "redux-persist/es/persistReducer";
 import authReducer from "./reducers/auth_reducers";
 import notifyReducer from "./reducers/notify_reducers";
 import currentReducer from "./reducers/current_reducers";
+import dashboardReducer from "./reducers/dashboard_reducers";
 
 // Define your root reducer
 const rootReducer = combineReducers({
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   notify: notifyReducer,
   current: currentReducer,
   modal: modalSlice,
+  dashboard: dashboardReducer,
 });
 
 // Define your persist config

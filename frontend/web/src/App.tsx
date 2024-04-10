@@ -7,14 +7,16 @@ import {
 } from "react-router-dom";
 import Root from './pages/root';
 import Home from './pages/Home';
-import Error from'./pages/Error';
+import Error from './pages/Error';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Dashboard from './pages/Dashboard';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Root />}>
       <Route path="/" element={<Home />}>
-        
+        <Route index element={<Dashboard />} />
+        <Route path="/" element={<Dashboard />} />
       </Route>
       <Route path="login" element={<Login />} />
       <Route path="signup" element={<Signup />} />
