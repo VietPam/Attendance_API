@@ -16,12 +16,14 @@ import authReducer from "./reducers/auth_reducers";
 import notifyReducer from "./reducers/notify_reducers";
 import currentReducer from "./reducers/current_reducers";
 import dashboardReducer from "./reducers/dashboard_reducers";
+import departmentReducer from "./reducers/department_reducers";
 
 // Define your root reducer
 const rootReducer = combineReducers({
   auth: authReducer,
   notify: notifyReducer,
   current: currentReducer,
+  department: departmentReducer,
   modal: modalSlice,
   dashboard: dashboardReducer,
 });
