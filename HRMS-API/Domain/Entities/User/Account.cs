@@ -3,15 +3,18 @@
 namespace Domain.Entities.User;
 public class Account : Entity
 {
-    public string Email { get; set; } = string.Empty;
-    public string password { get; set; } = string.Empty;
-    public Role? role { get; set; } = Role.EMPLOYEE;
+    public required string Email { get; set; }
+    public required string Password { get; set; }
+    //public Role Role { get; set; }
+    public AccountInfo? AccountInfo { get; set; }
+}
 
-}
-public enum Role
-{
-    ADMIN,
-    DIRECTOR,
-    MANAGER,
-    EMPLOYEE
-}
+//public Role? role { get; set; } = Role.EMPLOYEE;
+
+//public enum Role
+//{
+//    ADMIN,
+//    DIRECTOR,
+//    MANAGER,
+//    EMPLOYEE
+//}

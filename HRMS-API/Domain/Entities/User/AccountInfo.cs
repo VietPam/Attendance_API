@@ -3,11 +3,13 @@
 namespace Domain.Entities.User;
 public class AccountInfo : Entity
 {
-    public string FullName { get; set; } = string.Empty;
-    public string PhoneNumber { get; set; } = string.Empty;
-    public string Avatar { get; set; } = string.Empty;
-    public DateTime birthDay { get; set; } = DateTime.UtcNow;
-    public bool Gender { get; set; } = true;
-    public string IdNumber { get; set; } = string.Empty;
-    public string Address { get; set; } = string.Empty;
+    public required string FullName { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? Avatar { get; set; }
+    public DateTime? BirthDay { get; set; }
+    public bool? Gender { get; set; }
+    public string? IdNumber { get; set; }
+    public string? Address { get; set; }
+    public int AccountId { get; set; }
+    public Account Account { get; set; } = null!;
 }

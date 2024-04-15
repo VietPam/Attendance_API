@@ -7,7 +7,7 @@ namespace HRMS_API.Controllers;
 public class AuthController : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Login()
+    public IActionResult Login()
     {
         return Ok();
     }
