@@ -1,4 +1,4 @@
-using Infrastructure.DI;
+﻿using Infrastructure.DI;
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -19,3 +19,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+// global filter soft delete
+// sửa lại primitives theo trần đồng, chia nhiều interfaces

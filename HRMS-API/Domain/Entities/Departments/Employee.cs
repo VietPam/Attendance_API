@@ -1,9 +1,10 @@
-﻿using Domain.Entities.Common;
+﻿using Domain.Entities.Accounts;
+using Domain.Entities.Common;
 
-namespace Domain.Entities.User;
-public class AccountInfo : Entity
+namespace Domain.Entities.Departments;
+public class User : Entity
 {
-    public required string FullName { get; set; }
+    public string FullName { get; set; } = string.Empty;
     public string? PhoneNumber { get; set; }
     public string? Avatar { get; set; }
     public DateTime? BirthDay { get; set; }

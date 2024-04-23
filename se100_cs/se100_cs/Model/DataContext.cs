@@ -7,7 +7,6 @@ namespace se100_cs.Model
         public static Random random = new();
         public DbSet<SqlEmployee>? employees { get; set; }
         public DbSet<SqlDepartment> departments { get; set; }
-        public DbSet<SqlPayroll> payrolls { get; set; }
         public DbSet<SqlAttendance>? attendances { get; set; }
         public DbSet<SqlState> ATD_state { get; set; }
         public DbSet<SqlPosition>? positions { get; set; }
