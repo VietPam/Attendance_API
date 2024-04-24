@@ -22,7 +22,7 @@ namespace Infrastructure.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entities.Accounts.Account", b =>
+            modelBuilder.Entity("Domain.Entities.Accounts.SqlAccount", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -56,8 +56,26 @@ namespace Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("PasswordReset")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ResetToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ResetTokenExpires")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("RoleId")
                         .HasColumnType("integer");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("VerificationToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("Verified")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -69,7 +87,7 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("Accounts", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Accounts.Role", b =>
+            modelBuilder.Entity("Domain.Entities.Accounts.SqlRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -109,10 +127,63 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Attendances.AttenState", b =>
+            modelBuilder.Entity("Domain.Entities.Accounts.SqlToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AccountId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("Deleted")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("accessToken")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("createTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("expiredTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("isExpired")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("refreshToken")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("Tokens");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Attendances.SqlAttenState", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -151,7 +222,7 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("AttenStates");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Attendances.Attendance", b =>
+            modelBuilder.Entity("Domain.Entities.Attendances.SqlAttendance", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -195,7 +266,7 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("Attendances");
                 });
 
-            modelBuilder.Entity("Domain.Entities.CompanySetting", b =>
+            modelBuilder.Entity("Domain.Entities.Departments.SqlDepartment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -219,52 +290,8 @@ namespace Infrastructure.Data.Migrations
                     b.Property<string>("DeletedBy")
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("HourStartWorking")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("PaymentDate")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("SalaryPerCoef")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CompanySettings");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Departments.Department", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("Deleted")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("DeletedBy")
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("LastModified")
@@ -279,10 +306,10 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Department");
+                    b.ToTable("Departments");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Departments.Position", b =>
+            modelBuilder.Entity("Domain.Entities.Departments.SqlPosition", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -315,12 +342,12 @@ namespace Infrastructure.Data.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
 
+                    b.Property<decimal>("SalaryCoeffcient")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<decimal>("salaryCoeffcient")
-                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
@@ -329,7 +356,7 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("Positions");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Departments.User", b =>
+            modelBuilder.Entity("Domain.Entities.Departments.SqlUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -361,9 +388,6 @@ namespace Infrastructure.Data.Migrations
                     b.Property<string>("DeletedBy")
                         .HasColumnType("text");
 
-                    b.Property<int?>("DepartmentId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -383,7 +407,10 @@ namespace Infrastructure.Data.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
 
-                    b.Property<int?>("PositionId")
+                    b.Property<int?>("SqlDepartmentId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("SqlPositionId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -391,31 +418,84 @@ namespace Infrastructure.Data.Migrations
                     b.HasIndex("AccountId")
                         .IsUnique();
 
-                    b.HasIndex("DepartmentId");
+                    b.HasIndex("SqlDepartmentId");
 
-                    b.HasIndex("PositionId");
+                    b.HasIndex("SqlPositionId");
 
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Accounts.Account", b =>
+            modelBuilder.Entity("Domain.Entities.SqlCompanySetting", b =>
                 {
-                    b.HasOne("Domain.Entities.Accounts.Role", "Role")
-                        .WithMany()
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("Deleted")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("HourStartWorking")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("PaymentDate")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("SalaryPerCoef")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CompanySettings");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Accounts.SqlAccount", b =>
+                {
+                    b.HasOne("Domain.Entities.Accounts.SqlRole", "Role")
+                        .WithMany("Accounts")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Attendances.Attendance", b =>
+            modelBuilder.Entity("Domain.Entities.Accounts.SqlToken", b =>
                 {
-                    b.HasOne("Domain.Entities.Attendances.AttenState", "State")
+                    b.HasOne("Domain.Entities.Accounts.SqlAccount", "Account")
+                        .WithMany("Tokens")
+                        .HasForeignKey("AccountId");
+
+                    b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Attendances.SqlAttendance", b =>
+                {
+                    b.HasOne("Domain.Entities.Attendances.SqlAttenState", "State")
                         .WithMany()
                         .HasForeignKey("StateId");
 
-                    b.HasOne("Domain.Entities.Departments.User", "User")
+                    b.HasOne("Domain.Entities.Departments.SqlUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -426,9 +506,9 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Departments.Position", b =>
+            modelBuilder.Entity("Domain.Entities.Departments.SqlPosition", b =>
                 {
-                    b.HasOne("Domain.Entities.Departments.Department", "Department")
+                    b.HasOne("Domain.Entities.Departments.SqlDepartment", "Department")
                         .WithMany("Position")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -437,38 +517,45 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Departments.User", b =>
+            modelBuilder.Entity("Domain.Entities.Departments.SqlUser", b =>
                 {
-                    b.HasOne("Domain.Entities.Accounts.Account", "Account")
+                    b.HasOne("Domain.Entities.Accounts.SqlAccount", "Account")
                         .WithOne("User")
-                        .HasForeignKey("Domain.Entities.Departments.User", "AccountId")
+                        .HasForeignKey("Domain.Entities.Departments.SqlUser", "AccountId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Departments.Department", null)
+                    b.HasOne("Domain.Entities.Departments.SqlDepartment", null)
                         .WithMany("Users")
-                        .HasForeignKey("DepartmentId");
+                        .HasForeignKey("SqlDepartmentId");
 
-                    b.HasOne("Domain.Entities.Departments.Position", null)
+                    b.HasOne("Domain.Entities.Departments.SqlPosition", null)
                         .WithMany("Users")
-                        .HasForeignKey("PositionId");
+                        .HasForeignKey("SqlPositionId");
 
                     b.Navigation("Account");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Accounts.Account", b =>
+            modelBuilder.Entity("Domain.Entities.Accounts.SqlAccount", b =>
                 {
+                    b.Navigation("Tokens");
+
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Departments.Department", b =>
+            modelBuilder.Entity("Domain.Entities.Accounts.SqlRole", b =>
+                {
+                    b.Navigation("Accounts");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Departments.SqlDepartment", b =>
                 {
                     b.Navigation("Position");
 
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Departments.Position", b =>
+            modelBuilder.Entity("Domain.Entities.Departments.SqlPosition", b =>
                 {
                     b.Navigation("Users");
                 });

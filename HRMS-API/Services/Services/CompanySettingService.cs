@@ -4,12 +4,29 @@ using Microsoft.EntityFrameworkCore;
 using Services.DTOs;
 using Services.Mappers;
 
-namespace Services.APIs;
+namespace Services.Services;
 public class CompanySettingService(ApplicationDbContext context)
 {
-    public CompanySettingDTO Get()
+    public async Task InitAsync()
     {
-        CompanySetting? setting = context.CompanySettings.FirstOrDefault();
+        if (await context.CompanySettings.AnyAsync())
+        {
+            return;
+        }
+
+        SqlCompanySetting companySetting = new()
+        {
+            Name = "Initial Company",
+            HourStartWorking = DateTime.UtcNow,
+            SalaryPerCoef = 200000,
+            PaymentDate = 15
+        };
+        await context.CompanySettings.AddAsync(companySetting);
+        await context.SaveChangesAsync();
+    }
+    public async Task<CompanySettingDTO> GetAsync()
+    {
+        SqlCompanySetting? setting = await context.CompanySettings.FirstOrDefaultAsync();
 
         if (setting == null)
         {
@@ -21,15 +38,18 @@ public class CompanySettingService(ApplicationDbContext context)
 
 
     public async Task<bool> UpdateOne(string Name, // nhớ đổi chỗ code với name
-                                        string Code,
                                         DateTime HourStartWorking,
                                         decimal SalaryPerCoef,
                                         int PaymentDate)
     {
-        CompanySetting? company = await context.CompanySettings.FirstOrDefaultAsync() ?? new CompanySetting();
+        SqlCompanySetting? company = await context.CompanySettings.FirstOrDefaultAsync();
+        if (company == null)
+        {
+            return false;
+        }
+
 
         company.Name = Name;
-        company.Code = Code;
         company.HourStartWorking = HourStartWorking;
         company.SalaryPerCoef = SalaryPerCoef;
         company.PaymentDate = PaymentDate;

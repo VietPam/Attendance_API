@@ -11,13 +11,13 @@ public class AttenStateService(ApplicationDbContext context)
         bool NeedToSave = false;
         List<string> stateCodes = ["Absent", "Late", "OnTime"];
 
-        List<AttenState> state = await context.AttenStates.Where(s => stateCodes.Contains(s.Code)).ToListAsync();
+        List<SqlAttenState> state = await context.AttenStates.Where(s => stateCodes.Contains(s.Code)).ToListAsync();
 
         foreach (string stateCode in stateCodes)
         {
             if (!state.Any(s => s.Code == stateCode))
             {
-                context.AttenStates.Add(new AttenState { Code = stateCode, Name = stateCode });
+                context.AttenStates.Add(new SqlAttenState { Code = stateCode, Name = stateCode });
                 NeedToSave = true;
             }
         }

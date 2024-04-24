@@ -10,13 +10,15 @@ using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.Data;
 public class ApplicationDbContext : DbContext
 {
-    public DbSet<Account> Accounts { get; set; }
-    public DbSet<User> User { get; set; }
-    public DbSet<Attendance> Attendances { get; set; }
-    public DbSet<AttenState> AttenStates { get; set; }
-    public DbSet<Position> Positions { get; set; }
-    public DbSet<Role> Roles { get; set; }
-    public DbSet<CompanySetting> CompanySettings { get; set; }
+    public DbSet<SqlAccount> Accounts { get; set; }
+    public DbSet<SqlUser> User { get; set; }
+    public DbSet<SqlDepartment> Departments { get; set; }
+    public DbSet<SqlAttendance> Attendances { get; set; }
+    public DbSet<SqlAttenState> AttenStates { get; set; }
+    public DbSet<SqlPosition> Positions { get; set; }
+    public DbSet<SqlRole> Roles { get; set; }
+    public DbSet<SqlToken> Tokens { get; set; }
+    public DbSet<SqlCompanySetting> CompanySettings { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -26,6 +28,7 @@ public class ApplicationDbContext : DbContext
     {
         builder.ApplyConfiguration(new AccountConfiguration());
         builder.ApplyConfiguration(new UserConfiguration());
+        builder.ApplyConfiguration(new RoleConfiguration());
         QueryFilterHelper.AddQueryFilters(builder);
 
         base.OnModelCreating(builder);

@@ -2,7 +2,7 @@
 using Domain.Intefaces.Repositories.Base;
 
 namespace Domain.Intefaces.Repositories;
-public interface IAuthRepository : IRepository<Account>
+public interface IAuthRepository : IRepository<SqlAccount>
 {
-    Task<Account> GetByUserId(int userId);
+    Task<SqlAccount> GetByUserId(int userId);
 }

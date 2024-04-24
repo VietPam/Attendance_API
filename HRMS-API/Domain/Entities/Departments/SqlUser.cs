@@ -2,7 +2,7 @@
 using Domain.Entities.Common;
 
 namespace Domain.Entities.Departments;
-public class User : Entity
+public class SqlUser : Entity
 {
     public string FullName { get; set; } = string.Empty;
     public string? PhoneNumber { get; set; }
@@ -12,5 +12,5 @@ public class User : Entity
     public string? IdNumber { get; set; }
     public string? Address { get; set; }
     public int AccountId { get; set; }
-    public Account Account { get; set; } = null!;
+    public SqlAccount Account { get; set; } = null!;
 }

@@ -9,7 +9,9 @@
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
-
+	<ItemGroup>
+		<PackageReference Include="MailKit" Version="4.3.0" />
+	</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>

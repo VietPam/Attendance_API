@@ -1,25 +1,25 @@
 ﻿namespace Services.DTOs;
 public class CompanySettingDTO
 {
+    public int Id { get; set; }
     public string Name { get; set; }
-    public string Code { get; set; }
-    public DateTime? HourStartWorking { get; set; }
+    public string HourStartWorking { get; set; }
     public decimal SalaryPerCoef { get; set; }
     public int PaymentDate { get; set; }
 
     public CompanySettingDTO()
     {
+        Id = -1;
         Name = "";
-        Code = "";
-        HourStartWorking = null;
+        HourStartWorking = "";
         SalaryPerCoef = 0;
         PaymentDate = 0;
     }
 
-    public CompanySettingDTO(string name, string code, DateTime? hourStartWorking, decimal salaryPerCoef, int paymentDate)
+    public CompanySettingDTO(int id, string name, string hourStartWorking, decimal salaryPerCoef, int paymentDate)
     {
+        Id = id;
         Name = name;
-        Code = code;
         HourStartWorking = hourStartWorking;
         SalaryPerCoef = salaryPerCoef;
         PaymentDate = paymentDate;
