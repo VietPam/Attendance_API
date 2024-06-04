@@ -54,7 +54,16 @@ public class MySetting
             SqlSetting? company = context.settings!.FirstOrDefault();
             if (company == null)
             {
-                return false;
+                company = new SqlSetting();
+                company.company_code = company_code;
+                company.company_name = company_name;
+                company.start_time_hour = start_time_hour;
+                company.start_time_minute = start_time_minute;
+                company.salary_per_coef = salary_per_coef;
+                company.payment_date = payment_date;
+                context.settings.Add(company);
+                await context.SaveChangesAsync();
+                return true;
             }
             else
             {

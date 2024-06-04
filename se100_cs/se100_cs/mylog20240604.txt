@@ -1,0 +1,27 @@
+2024-06-04 11:24:40.438 +07:00 [INF] 0
+2024-06-04 11:24:42.083 +07:00 [INF] 0
+2024-06-04 11:24:47.032 +07:00 [INF] 0
+2024-06-04 11:25:42.220 +07:00 [INF] 0
+2024-06-04 11:26:23.575 +07:00 [INF] 0
+2024-06-04 11:26:37.673 +07:00 [INF] 0
+2024-06-04 11:27:09.510 +07:00 [INF] 0
+2024-06-04 11:27:43.644 +07:00 [INF] 0
+2024-06-04 11:27:57.833 +07:00 [INF] User: new connection 5EiUvN4nEDiwndCEXdlcZg
+2024-06-04 11:27:57.852 +07:00 [INF] Reconnect fail
+2024-06-04 11:27:57.860 +07:00 [INF] Send message fail
+2024-06-04 11:27:58.473 +07:00 [INF] User: new connection xsoheS9oybYwatU9t2D3mA
+2024-06-04 11:27:58.475 +07:00 [INF] Reconnect fail
+2024-06-04 11:27:58.478 +07:00 [INF] Send message fail
+2024-06-04 11:28:24.276 +07:00 [INF] User: remove client 5EiUvN4nEDiwndCEXdlcZg
+2024-06-04 11:28:24.780 +07:00 [INF] 0
+2024-06-04 11:28:24.849 +07:00 [INF] User: new connection aST2oxhuRm97O7EomhOfVA
+2024-06-04 11:28:24.852 +07:00 [INF] Reconnect fail
+2024-06-04 11:28:24.857 +07:00 [INF] Send message fail
+2024-06-04 11:29:00.464 +07:00 [INF] 0
+2024-06-04 11:30:03.003 +07:00 [INF] 0
+2024-06-04 11:30:03.089 +07:00 [INF] User: remove client xsoheS9oybYwatU9t2D3mA
+2024-06-04 11:30:03.091 +07:00 [INF] User: new connection In9-vBnd5m1_LhM5UP88SQ
+2024-06-04 11:32:26.663 +07:00 [INF] User: remove client In9-vBnd5m1_LhM5UP88SQ
+2024-06-04 11:32:26.699 +07:00 [INF] User: new connection K8C2s-iclmXJLamY2cf9-w
+2024-06-04 11:32:26.699 +07:00 [INF] User: remove client aST2oxhuRm97O7EomhOfVA
+2024-06-04 11:32:26.721 +07:00 [INF] User: new connection gF6EUxtZIINV_gL0I447Gg

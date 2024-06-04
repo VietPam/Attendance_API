@@ -47,7 +47,7 @@ export default function AttendanceChart() {
   const attendances = useSelector(
     (state: RootState) => state.dashboard.data.attendance_ByWeek
   );
-
+// console.log(attendances);
   const data = {
     labels,
     datasets: [
