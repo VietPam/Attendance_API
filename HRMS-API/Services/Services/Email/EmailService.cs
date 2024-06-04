@@ -14,7 +14,7 @@ public class EmailService
         email.Subject = subject;
 
 
-        var builder = new BodyBuilder();
+        BodyBuilder builder = new();
         builder.HtmlBody = html;
         email.Body = builder.ToMessageBody();
 
