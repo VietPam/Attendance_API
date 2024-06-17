@@ -1,0 +1,8 @@
+2024-06-09 18:53:08.198 +07:00 [INF] User: new connection r1vJj7TMH8hq52zInt5b4Q
+2024-06-09 18:53:08.348 +07:00 [INF] Reconnect fail
+2024-06-09 18:53:08.370 +07:00 [INF] Send message fail
+2024-06-09 18:53:17.401 +07:00 [INF] User: remove client r1vJj7TMH8hq52zInt5b4Q
+2024-06-09 18:53:18.152 +07:00 [INF] User: new connection -aygSv41xxhJ5PM-L49i4Q
+2024-06-09 18:53:18.156 +07:00 [INF] Reconnect fail
+2024-06-09 18:53:18.166 +07:00 [INF] Send message fail
+2024-06-09 19:24:59.854 +07:00 [INF] User: remove client -aygSv41xxhJ5PM-L49i4Q

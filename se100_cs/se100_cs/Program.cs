@@ -11,15 +11,15 @@ namespace se100_cs
 {
     public class Program
     {
-        public static MyDepartment api_department=new MyDepartment();
-        public static MyPosition api_position=new MyPosition();
-        public static MyEmployee api_employee=new MyEmployee();
+        public static MyDepartment api_department = new MyDepartment();
+        public static MyPosition api_position = new MyPosition();
+        public static MyEmployee api_employee = new MyEmployee();
         public static MyDashboard api_dashboard = new MyDashboard();
-        public static MyAttendance api_attendance=new MyAttendance();
-        public static MySetting api_setting=new MySetting();
+        public static MyAttendance api_attendance = new MyAttendance();
+        public static MySetting api_setting = new MySetting();
         public static MyPayroll api_payroll = new MyPayroll();
         public static MyState api_state = new MyState();
-        public static IHubContext<NotiHub>? notiHub; 
+        public static IHubContext<NotiHub>? notiHub;
         public static async Task Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
@@ -32,7 +32,7 @@ namespace se100_cs
                 var builder = WebApplication.CreateBuilder(args);
                 builder.Services.AddCors(options =>
                 {
-                    options.AddPolicy("localhost",builder =>
+                    options.AddPolicy("localhost", builder =>
                     {
                         builder.WithOrigins("http://localhost:5173")
                             .AllowAnyHeader()
@@ -56,7 +56,11 @@ namespace se100_cs
                     options.MaximumReceiveMessageSize = 10 * 1024 * 1024;
                     options.StreamBufferCapacity = 10 * 1024 * 1024;
                 }).AddMessagePackProtocol();
-                builder.Services.AddDbContext<DataContext>(options =>options.UseNpgsql(DataContext.configSql));
+
+                builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
+
+                builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(DataContext.configSql));
                 builder.Services.AddControllers();
                 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
                 builder.Services.AddEndpointsApiExplorer();
@@ -72,12 +76,12 @@ namespace se100_cs
                 }
 
                 // Configure the HTTP request pipeline.
-                    app.UseSwagger();
-                    app.UseSwaggerUI();
-                    
+                app.UseSwagger();
+                app.UseSwaggerUI();
+
                 app.UseCors("localhost");
                 app.UseRouting();
-                app.UseAuthorization(); 
+                app.UseAuthorization();
                 app.MapGet("/", () => string.Format("Server E-Management of SE100- {0}", DateTime.Now));
 
                 app.UseEndpoints(endpoints =>
@@ -99,7 +103,7 @@ namespace se100_cs
             {
                 Log.Error(e.Message);
             }
-            
+
         }
     }
 }

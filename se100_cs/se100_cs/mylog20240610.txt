@@ -1,0 +1,10 @@
+2024-06-10 22:10:52.231 +07:00 [INF] User: new connection omfPbiMQ-8MkgxWbPlgMkw
+2024-06-10 22:10:52.356 +07:00 [INF] Reconnect fail
+2024-06-10 22:10:52.371 +07:00 [INF] Send message fail
+2024-06-10 22:11:00.363 +07:00 [INF] User: remove client omfPbiMQ-8MkgxWbPlgMkw
+2024-06-10 22:11:00.577 +07:00 [INF] User: new connection 6wIm9kkyGhRiIDBbFSPoKA
+2024-06-10 22:11:00.584 +07:00 [INF] Reconnect fail
+2024-06-10 22:11:00.587 +07:00 [INF] Send message fail
+2024-06-10 22:11:27.360 +07:00 [INF] 0
+2024-06-10 22:11:36.865 +07:00 [INF] 0
+2024-06-10 22:11:54.187 +07:00 [INF] 0
